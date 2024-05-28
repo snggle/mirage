@@ -1,69 +1,30 @@
-import 'package:flutter/material.dart';
+import 'dart:io';
 
-void main() {
-  runApp(const MyApp());
-}
+import 'package:mirage/config/locator.dart';
+import 'package:mirage/trezor_protocol/controllers/trezor_http_controller.dart';
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+// ignore_for_file: avoid_print
+Future<void> main() async {
+  await initLocator();
 
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+  try {
+    HttpServer server = await HttpServer.bind(
+      InternetAddress.anyIPv4,
+      21325,
     );
-  }
-}
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({required this.title, super.key});
+    print('Running HTTP server on localhost:${server.port}');
 
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
-    );
+    await for (HttpRequest request in server) {
+      globalLocator<TrezorHttpController>().handleRequest(request);
+    }
+  } on SocketException catch (e) {
+    if (e.osError?.errorCode == 48 || e.osError?.errorCode == 98) {
+      print('Port 21325 is already in use. Please close the application using this port or try "sudo fuser -k 21325/tcp".');
+    } else {
+      print('Failed to bind the HTTP server: $e');
+    }
+  } catch (e) {
+    print('An unexpected error occurred: $e');
   }
 }
