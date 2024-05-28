@@ -16,6 +16,11 @@ dependencies:
   flutter_bloc: ^8.1.3
   bloc_test: ^9.1.4
 
+  # Dart package containing utility methods for common cryptographic and blockchain-specific operations.
+  cryptography_utils:
+    git:
+      url: git@github.com:snggle/cryptography_utils.git
+
   # A Dart package that helps to implement value based equality without needing to explicitly override == and hashCode.
   # https://pub.dev/packages/equatable
   equatable: ^2.0.5
@@ -30,6 +35,10 @@ dependencies:
 
   # Provides runtime support for a Dart implementation of protobufs.
   protobuf: ^3.1.0
+
+  # The calculation of blockchain gas based on the dart language (refer to metamask for calculation logic),
+  # in order to prevent the code of web3dart from being updated too quickly, the code is included and partially modified.
+  dart_web3gas: ^0.0.8
 
 dev_dependencies:
   flutter_test:
