@@ -1,7 +1,7 @@
 name: mirage
 description: Desktop application connecting SNGGLE with PC
 publish_to: 'none'
-version: 0.0.1
+version: 0.0.2
 
 environment:
   sdk: ">=3.1.5"
@@ -27,6 +27,9 @@ dependencies:
   # Small, easy to use and extensible logger which prints beautiful logs.
   # https://pub.dev/packages/logger
   logger: ^2.0.2+1
+
+  # Provides runtime support for a Dart implementation of protobufs.
+  protobuf: ^3.1.0
 
 dev_dependencies:
   flutter_test:
