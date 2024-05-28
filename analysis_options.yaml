@@ -23,6 +23,7 @@ analyzer:
     - lib/generated/**
     - lib/**.g.dart
     - lib/**.gr.dart
+    - lib/protobuf/compiled/**
 
   language:
     # Value of true ensures that the type inference engine never implicitly casts to a more specific type

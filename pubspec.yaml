@@ -28,6 +28,9 @@ dependencies:
   # https://pub.dev/packages/logger
   logger: ^2.0.2+1
 
+  # Provides runtime support for a Dart implementation of protobufs.
+  protobuf: ^3.1.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
