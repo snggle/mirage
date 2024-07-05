@@ -32,7 +32,7 @@ class ProtobufMsgSerializer {
     Uint8List msgContents = inputBytes.sublist(6, 6 + _getMsgSize(buffer));
     try {
       MessageType? messageType = MessageType.valueOf(_getMsgType(buffer));
-      return ProtobufMsgMapper.getMsgFromType(messageType!, msgContents);
+      return ProtobufMsgMapper.getRequestFromProtobufType(messageType!, msgContents);
     } catch (e) {
       throw ArgumentError('Could not interpret bytes: $buffer');
     }
@@ -46,7 +46,7 @@ class ProtobufMsgSerializer {
     Uint8List msgTypeBytes = BytesUtils.convertIntToBytes(msgType, 2);
     Uint8List msgSizeBytes = BytesUtils.convertIntToBytes(msgSize, 4);
 
-    Uint8List mergedBytes = BytesUtils.mergeUint8Lists(<Uint8List>[msgTypeBytes, msgSizeBytes, msgBuffer]);
+    Uint8List mergedBytes = BytesUtils.mergeBytes(<Uint8List>[msgTypeBytes, msgSizeBytes, msgBuffer]);
 
     String buffer = BytesUtils.convertBytesToHex(mergedBytes);
     return buffer;
