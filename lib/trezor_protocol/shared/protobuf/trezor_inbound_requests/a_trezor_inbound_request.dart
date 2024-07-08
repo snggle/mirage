@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:mirage/trezor_protocol/shared/protobuf/messages_compiled/messages-bitcoin.pb.dart';
+import 'package:mirage/trezor_protocol/shared/protobuf/messages_compiled/messages-common.pb.dart';
 import 'package:mirage/trezor_protocol/shared/protobuf/messages_compiled/messages-ethereum.pb.dart';
 import 'package:mirage/trezor_protocol/shared/protobuf/messages_compiled/messages-management.pb.dart';
 import 'package:mirage/trezor_protocol/shared/protobuf/trezor_inbound_requests/automated/trezor_device_address_request.dart';
@@ -8,17 +9,23 @@ import 'package:mirage/trezor_protocol/shared/protobuf/trezor_inbound_requests/a
 import 'package:mirage/trezor_protocol/shared/protobuf/trezor_inbound_requests/interactive/trezor_eip1559_signature_request.dart';
 import 'package:mirage/trezor_protocol/shared/protobuf/trezor_inbound_requests/interactive/trezor_eth_msg_signature_request.dart';
 import 'package:mirage/trezor_protocol/shared/protobuf/trezor_inbound_requests/interactive/trezor_public_key_request.dart';
+import 'package:mirage/trezor_protocol/shared/protobuf/trezor_inbound_requests/supplementary/trezor_tx_data_supply.dart';
+import 'package:mirage/trezor_protocol/shared/protobuf/trezor_inbound_requests/supplementary/trezor_wait_for_response_agreement.dart';
 import 'package:protobuf/protobuf.dart' as protobuf;
 
 abstract class ATrezorInboundRequest extends Equatable {
   static ATrezorInboundRequest fromProtobufMsg(protobuf.GeneratedMessage incomingMsg) {
     switch (incomingMsg) {
+      case ButtonAck _:
+        return TrezorWaitForResponseAgreement();
       case Initialize initialize:
         return TrezorInitRequest.fromProtobufMsg(initialize);
       case GetFeatures _:
         return TrezorPropertiesRequest();
       case GetAddress _:
         return TrezorDeviceAddressRequest();
+      case EthereumTxAck ethereumTxAck:
+        return TrezorTxDataSupply.fromProtobufMsg(ethereumTxAck);
       case GetPublicKey getPublicKey:
         return TrezorPublicKeyRequest.fromProtobufMsg(getPublicKey);
       case EthereumSignMessage ethereumSignMessage:

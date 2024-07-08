@@ -6,8 +6,14 @@ import 'package:mirage/shared/utils/bytes_utils.dart';
 import 'package:mirage/trezor_protocol/shared/protobuf/messages_compiled/messages-ethereum-definitions.pb.dart';
 import 'package:mirage/trezor_protocol/shared/protobuf/messages_compiled/messages-ethereum.pb.dart';
 import 'package:mirage/trezor_protocol/shared/protobuf/trezor_inbound_requests/interactive/a_trezor_interactive_request.dart';
+import 'package:mirage/trezor_protocol/shared/protobuf/trezor_inbound_requests/supplementary/a_trezor_supplementary_request.dart';
+import 'package:mirage/trezor_protocol/shared/protobuf/trezor_inbound_requests/supplementary/trezor_tx_data_supply.dart';
+import 'package:mirage/trezor_protocol/shared/protobuf/trezor_inbound_requests/supplementary/trezor_wait_for_response_agreement.dart';
+import 'package:mirage/trezor_protocol/shared/protobuf/trezor_outbound_responses/a_trezor_outbound_response.dart';
 import 'package:mirage/trezor_protocol/shared/protobuf/trezor_outbound_responses/awaited/a_trezor_awaited_response.dart';
 import 'package:mirage/trezor_protocol/shared/protobuf/trezor_outbound_responses/awaited/trezor_eip1559_signature_response.dart';
+import 'package:mirage/trezor_protocol/shared/protobuf/trezor_outbound_responses/trezor_ask_more_data_response.dart';
+import 'package:mirage/trezor_protocol/shared/protobuf/trezor_outbound_responses/trezor_ask_to_wait_response.dart';
 
 class TrezorEIP1559SignatureRequest extends ATrezorInteractiveRequest {
   final bool waitingAgreedBool;
@@ -53,9 +59,58 @@ class TrezorEIP1559SignatureRequest extends ATrezorInteractiveRequest {
   }
 
   @override
+  ATrezorOutboundResponse askForSupplementaryInfo() {
+    bool completeDataBool = dataLength == ethereumEIP1559Transaction.data.length;
+
+    if (completeDataBool) {
+      return TrezorAskToWaitResponse.eip1559Signature();
+    } else {
+      int missingDataLength = dataLength - ethereumEIP1559Transaction.data.length;
+      if (missingDataLength <= 1024) {
+        return TrezorAskMoreDataResponse(requestedBytesLength: missingDataLength);
+      } else {
+        return TrezorAskMoreDataResponse(requestedBytesLength: 1024);
+      }
+    }
+  }
+
+  @override
+  TrezorEIP1559SignatureRequest fillWithAnotherRequest(ATrezorSupplementaryRequest trezorSupplementaryRequest) {
+    if (trezorSupplementaryRequest is TrezorWaitForResponseAgreement) {
+      return _copyWith(waitingAgreedBool: true);
+    } else if (trezorSupplementaryRequest is TrezorTxDataSupply) {
+      Uint8List newData = trezorSupplementaryRequest.dataChunk;
+      Uint8List filledData = BytesUtils.mergeBytes(<Uint8List>[ethereumEIP1559Transaction.data, newData]);
+      return _copyWith(data: filledData);
+    } else {
+      throw ArgumentError();
+    }
+  }
+
+  @override
   ATrezorAwaitedResponse getResponseFromUser() {
     _logRequestData();
     return TrezorEIP1559SignatureResponse.getDataFromUser();
+  }
+
+  TrezorEIP1559SignatureRequest _copyWith({bool? waitingAgreedBool, Uint8List? data}) {
+    return TrezorEIP1559SignatureRequest(
+      waitingAgreedBool: waitingAgreedBool ?? this.waitingAgreedBool,
+      ethereumEIP1559Transaction: cryptography_utils.EthereumEIP1559Transaction(
+        chainId: ethereumEIP1559Transaction.chainId,
+        nonce: ethereumEIP1559Transaction.nonce,
+        maxPriorityFeePerGas: ethereumEIP1559Transaction.maxPriorityFeePerGas,
+        maxFeePerGas: ethereumEIP1559Transaction.maxFeePerGas,
+        gasLimit: ethereumEIP1559Transaction.gasLimit,
+        to: ethereumEIP1559Transaction.to,
+        value: ethereumEIP1559Transaction.value,
+        data: data ?? ethereumEIP1559Transaction.data,
+        accessList: ethereumEIP1559Transaction.accessList,
+      ),
+      dataLength: dataLength,
+      derivationPath: derivationPath,
+      token: token,
+    );
   }
 
   void _logRequestData() {
@@ -101,6 +156,12 @@ class TrezorEIP1559SignatureRequest extends ATrezorInteractiveRequest {
     List<int> protobufPayload = encodedToken.sublist(12, 12 + protobufPayloadLength);
     EthereumTokenInfo ethereumTokenInfo = EthereumTokenInfo.fromBuffer(protobufPayload);
     return '${ethereumTokenInfo.name} ${ethereumTokenInfo.symbol}';
+  }
+
+  @override
+  bool get requestReadyBool {
+    bool dataCompleteBool = dataLength == ethereumEIP1559Transaction.data.length;
+    return waitingAgreedBool && dataCompleteBool;
   }
 
   @override
