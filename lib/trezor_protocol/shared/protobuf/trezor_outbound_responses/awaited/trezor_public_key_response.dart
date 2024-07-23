@@ -1,6 +1,4 @@
-import 'dart:io';
-
-import 'package:mirage/shared/utils/bytes_utils.dart';
+import 'package:cbor/cbor.dart';
 import 'package:mirage/trezor_protocol/shared/protobuf/messages_compiled/messages-bitcoin.pb.dart';
 import 'package:mirage/trezor_protocol/shared/protobuf/messages_compiled/messages-common.pb.dart';
 import 'package:mirage/trezor_protocol/shared/protobuf/trezor_outbound_responses/awaited/a_trezor_awaited_response.dart';
@@ -21,28 +19,21 @@ class TrezorPublicKeyResponse extends ATrezorAwaitedResponse {
     required this.xpub,
   });
 
-  factory TrezorPublicKeyResponse.getDataFromUser() {
-    stdout.write('Enter depth: ');
-    String depthLine = stdin.readLineSync()!;
+  factory TrezorPublicKeyResponse.fromCborValue(CborValue cborValue) {
+    CborList cborList = cborValue as CborList;
 
-    stdout.write('Enter fingerprint: ');
-    String fingerprintLine = stdin.readLineSync()!;
-
-    stdout.write('Enter chainCode: ');
-    String chainCodeLine = stdin.readLineSync()!;
-
-    stdout.write('Enter publicKey: ');
-    String publicKeyLine = stdin.readLineSync()!;
-
-    stdout.write('Enter xpub: ');
-    String xpubLine = stdin.readLineSync()!;
+    CborSmallInt cborDepth = cborList[0] as CborSmallInt;
+    CborSmallInt cborFingerprint = cborList[1] as CborSmallInt;
+    CborBytes cborChainCode = cborList[2] as CborBytes;
+    CborBytes cborPublicKey = cborList[3] as CborBytes;
+    CborString cborXpub = cborList[4] as CborString;
 
     return TrezorPublicKeyResponse(
-      depth: int.parse(depthLine),
-      fingerprint: int.parse(fingerprintLine),
-      chainCode: BytesUtils.parseStringToList(chainCodeLine),
-      publicKey: BytesUtils.parseStringToList(publicKeyLine),
-      xpub: xpubLine,
+      depth: cborDepth.value,
+      fingerprint: cborFingerprint.value,
+      chainCode: cborChainCode.bytes,
+      publicKey: cborPublicKey.bytes,
+      xpub: cborXpub.toString(),
     );
   }
 

@@ -1,6 +1,4 @@
-import 'dart:io';
-
-import 'package:mirage/shared/utils/bytes_utils.dart';
+import 'package:cbor/cbor.dart';
 import 'package:mirage/trezor_protocol/shared/protobuf/messages_compiled/messages-ethereum.pb.dart';
 import 'package:mirage/trezor_protocol/shared/protobuf/trezor_outbound_responses/awaited/a_trezor_awaited_response.dart';
 import 'package:protobuf/protobuf.dart';
@@ -16,20 +14,17 @@ class TrezorEIP1559SignatureResponse extends ATrezorAwaitedResponse {
     required this.signatureS,
   });
 
-  factory TrezorEIP1559SignatureResponse.getDataFromUser() {
-    stdout.write('Enter signatureV: ');
-    String signatureVLine = stdin.readLineSync()!;
+  factory TrezorEIP1559SignatureResponse.fromCborValue(CborValue cborValue) {
+    CborList cborList = cborValue as CborList;
 
-    stdout.write('Enter signatureR: ');
-    String signatureRLine = stdin.readLineSync()!;
-
-    stdout.write('Enter signatureS: ');
-    String signatureSLine = stdin.readLineSync()!;
+    CborSmallInt cborSignatureV = cborList[0] as CborSmallInt;
+    CborBytes cborSignatureR = cborList[1] as CborBytes;
+    CborBytes cborSignatureS = cborList[2] as CborBytes;
 
     return TrezorEIP1559SignatureResponse(
-      signatureV: int.parse(signatureVLine),
-      signatureR: BytesUtils.parseStringToList(signatureRLine),
-      signatureS: BytesUtils.parseStringToList(signatureSLine),
+      signatureV: cborSignatureV.value,
+      signatureR: cborSignatureR.bytes,
+      signatureS: cborSignatureS.bytes,
     );
   }
 

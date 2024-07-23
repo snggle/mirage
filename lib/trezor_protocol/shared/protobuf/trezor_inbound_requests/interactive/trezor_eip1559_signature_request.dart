@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
+import 'package:cbor/cbor.dart';
 import 'package:cryptography_utils/cryptography_utils.dart' as cryptography_utils;
-import 'package:mirage/shared/utils/app_logger.dart';
 import 'package:mirage/shared/utils/bytes_utils.dart';
 import 'package:mirage/trezor_protocol/shared/protobuf/messages_compiled/messages-ethereum-definitions.pb.dart';
 import 'package:mirage/trezor_protocol/shared/protobuf/messages_compiled/messages-ethereum.pb.dart';
@@ -53,19 +53,12 @@ class TrezorEIP1559SignatureRequest extends ATrezorInteractiveRequest {
   }
 
   @override
-  ATrezorAwaitedResponse getResponseFromUser() {
-    _logRequestData();
-    return TrezorEIP1559SignatureResponse.getDataFromUser();
-  }
+  Future<ATrezorAwaitedResponse> getResponseFromCborPayload(String payload) async {
+    List<int> payloadBytes = BytesUtils.convertHexToBytes(payload);
+    Stream<List<int>> byteStream = Stream<List<int>>.fromIterable(<List<int>>[payloadBytes]);
+    CborValue cborValue = await byteStream.transform(cbor.decoder).single;
 
-  void _logRequestData() {
-    String amount = ethereumEIP1559Transaction.getAmount(cryptography_utils.TokenDenominationType.network).amount.toString();
-    AppLogger().log(message: '*** Signing EIP1559 Transaction ***');
-    AppLogger().log(message: '*** Token: $token ***');
-    AppLogger().log(message: '*** Sending $amount to 0x${ethereumEIP1559Transaction.to} ***');
-    AppLogger().log(message: 'derivation path: ${derivationPath}');
-    AppLogger().log(message: 'sign data: ${ethereumEIP1559Transaction.serialize()}');
-    AppLogger().log(message: 'Enter the values');
+    return TrezorEIP1559SignatureResponse.fromCborValue(cborValue);
   }
 
   static String? _getToken(EthereumSignTxEIP1559 ethereumSignTxEIP1559) {
@@ -102,6 +95,15 @@ class TrezorEIP1559SignatureRequest extends ATrezorInteractiveRequest {
     EthereumTokenInfo ethereumTokenInfo = EthereumTokenInfo.fromBuffer(protobufPayload);
     return '${ethereumTokenInfo.name} ${ethereumTokenInfo.symbol}';
   }
+
+  @override
+  String get title {
+    String amount = ethereumEIP1559Transaction.getAmount(cryptography_utils.TokenDenominationType.network).amount.toString();
+    return 'Signing EIP1559 Transaction \nToken: $token \nSending $amount to 0x${ethereumEIP1559Transaction.to}';
+  }
+
+  @override
+  String get requestCbor => BytesUtils.convertBytesToHex(cbor.encode(CborValue(<Object>[derivationPath, ethereumEIP1559Transaction.serialize()])));
 
   @override
   List<Object?> get props => <Object?>[ethereumEIP1559Transaction, dataLength, derivationPath, token];
