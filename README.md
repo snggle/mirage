@@ -8,12 +8,12 @@ git clone git@github.com:snggle/mirage.git
 ```
 
 ## Usage
-The project runs on flutter version **3.13.9**. You can use [fvm](https://fvm.app/documentation/getting-started/installation)
+The project runs on flutter version **3.16.2**. You can use [fvm](https://fvm.app/documentation/getting-started/installation)
 for easy switching between versions
 ```bash
 # Install and use required flutter version
-fvm install 3.13.9
-fvm use 3.13.9
+fvm install 3.16.2
+fvm use 3.16.2
 
 # Install required packages in pubspec.yaml
 fvm flutter pub get
