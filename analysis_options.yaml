@@ -23,7 +23,7 @@ analyzer:
     - lib/generated/**
     - lib/**.g.dart
     - lib/**.gr.dart
-    - lib/trezor_protocol/shared/protobuf/messages_compiled/**
+    - lib/infra/trezor/protobuf/messages_compiled/**
 
   language:
     # Value of true ensures that the type inference engine never implicitly casts to a more specific type
