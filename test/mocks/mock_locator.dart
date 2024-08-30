@@ -5,9 +5,9 @@ import 'package:mirage/infra/trezor/trezor_communication_notifier.dart';
 
 final GetIt globalLocator = GetIt.I;
 
-Future<void> initLocator() async {
+Future<void> initMockLocator() async {
   globalLocator
-    ..registerLazySingleton<PubkeyRepository>(() => PubkeyRepository('storage'))
+    ..registerLazySingleton<PubkeyRepository>(() => PubkeyRepository('test/mocks/tmp'))
     ..registerLazySingleton<PubkeyService>(PubkeyService.new)
     ..registerLazySingleton<TrezorCommunicationNotifier>(TrezorCommunicationNotifier.new);
 }
