@@ -2,7 +2,6 @@ import 'package:mirage/infra/trezor/protobuf/messages_compiled/messages-ethereum
 import 'package:mirage/infra/trezor/protobuf/trezor_inbound_requests/interactive/a_trezor_interactive_request.dart';
 import 'package:mirage/infra/trezor/protobuf/trezor_outbound_responses/awaited/a_trezor_awaited_response.dart';
 import 'package:mirage/infra/trezor/protobuf/trezor_outbound_responses/awaited/trezor_eth_msg_signature_response.dart';
-import 'package:mirage/shared/utils/app_logger.dart';
 
 class TrezorEthMsgSignatureRequest extends ATrezorInteractiveRequest {
   final bool waitingAgreedBool;
@@ -24,17 +23,31 @@ class TrezorEthMsgSignatureRequest extends ATrezorInteractiveRequest {
   }
 
   @override
-  ATrezorAwaitedResponse getResponseFromUser() {
-    _logRequestData();
-    return TrezorEthMsgSignatureResponse.getDataFromUser();
+  List<String> get description => <String>[];
+
+  @override
+  // TODO(Marcin): temporary method before CBOR implementation
+  List<String> get expectedResponseStructure => <String>[
+    'Address',
+    'Signature',
+  ];
+
+  @override
+  // TODO(Marcin): replace with "toSerializedCbor()" after CBOR implementation
+  Map<String, String> getRequestData() {
+    return <String, String>{
+      'Derivation path': derivationPath.toString(),
+      'Message': message.toString(),
+    };
   }
 
-  void _logRequestData() {
-    AppLogger().log(message: '*** Signing Ethereum Message ***');
-    AppLogger().log(message: 'derivation path: ${derivationPath}');
-    AppLogger().log(message: 'message: $message');
-    AppLogger().log(message: 'Enter the values');
+  @override
+  ATrezorAwaitedResponse getResponseFromUserInput(List<String> userInput) {
+    return TrezorEthMsgSignatureResponse.getDataFromUser(userInput);
   }
+
+  @override
+  String get title => 'Signing Ethereum Message';
 
   @override
   List<Object?> get props => <Object>[derivationPath, message];

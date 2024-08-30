@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:mirage/infra/trezor/protobuf/messages_compiled/messages-bitcoin.pb.dart';
 import 'package:mirage/infra/trezor/protobuf/messages_compiled/messages-common.pb.dart';
 import 'package:mirage/infra/trezor/protobuf/trezor_outbound_responses/awaited/a_trezor_awaited_response.dart';
@@ -21,30 +19,13 @@ class TrezorPublicKeyResponse extends ATrezorAwaitedResponse {
     required this.xpub,
   });
 
-  factory TrezorPublicKeyResponse.getDataFromUser() {
-    // TODO(Marcin): replace prompt data input with Audio Protocol implementation
-
-    stdout.write('Enter depth: ');
-    String depthLine = stdin.readLineSync()!;
-
-    stdout.write('Enter fingerprint: ');
-    String fingerprintLine = stdin.readLineSync()!;
-
-    stdout.write('Enter chainCode: ');
-    String chainCodeLine = stdin.readLineSync()!;
-
-    stdout.write('Enter publicKey: ');
-    String publicKeyLine = stdin.readLineSync()!;
-
-    stdout.write('Enter xpub: ');
-    String xpubLine = stdin.readLineSync()!;
-
+  factory TrezorPublicKeyResponse.getDataFromUser(List<String> userInput) {
     return TrezorPublicKeyResponse(
-      depth: int.parse(depthLine),
-      fingerprint: int.parse(fingerprintLine),
-      chainCode: BytesUtils.parseStringToList(chainCodeLine),
-      publicKey: BytesUtils.parseStringToList(publicKeyLine),
-      xpub: xpubLine,
+      depth: int.parse(userInput[0]),
+      fingerprint: int.parse(userInput[1]),
+      chainCode: BytesUtils.parseStringToList(userInput[2]),
+      publicKey: BytesUtils.parseStringToList(userInput[3]),
+      xpub: userInput[4],
     );
   }
 

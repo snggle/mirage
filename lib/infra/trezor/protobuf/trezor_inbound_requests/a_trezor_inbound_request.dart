@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:mirage/infra/trezor/protobuf/messages_compiled/messages-bitcoin.pb.dart';
 import 'package:mirage/infra/trezor/protobuf/messages_compiled/messages-ethereum.pb.dart';
 import 'package:mirage/infra/trezor/protobuf/messages_compiled/messages-management.pb.dart';
+import 'package:mirage/infra/trezor/protobuf/trezor_inbound_requests/automated/trezor_derived_public_key_request.dart';
 import 'package:mirage/infra/trezor/protobuf/trezor_inbound_requests/automated/trezor_device_address_request.dart';
 import 'package:mirage/infra/trezor/protobuf/trezor_inbound_requests/automated/trezor_init_request.dart';
 import 'package:mirage/infra/trezor/protobuf/trezor_inbound_requests/automated/trezor_properties_request.dart';
@@ -20,13 +21,21 @@ abstract class ATrezorInboundRequest extends Equatable {
       case GetAddress _:
         return TrezorDeviceAddressRequest();
       case GetPublicKey getPublicKey:
-        return TrezorPublicKeyRequest.fromProtobufMsg(getPublicKey);
+        return _selectRequest(getPublicKey);
       case EthereumSignMessage ethereumSignMessage:
         return TrezorEthMsgSignatureRequest.fromProtobufMsg(ethereumSignMessage);
       case EthereumSignTxEIP1559 ethereumSignTxEIP1559:
         return TrezorEIP1559SignatureRequest.fromProtobufMsg(ethereumSignTxEIP1559);
       default:
         throw ArgumentError();
+    }
+  }
+  
+  static ATrezorInboundRequest _selectRequest(GetPublicKey getPublicKey) {
+    if (getPublicKey.addressN.length == 4) {
+      return TrezorPublicKeyRequest.fromProtobufMsg(getPublicKey);
+    } else {
+      return TrezorDerivedPublicKeyRequest.fromProtobufMsg(getPublicKey);
     }
   }
 }
