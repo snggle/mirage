@@ -41,7 +41,7 @@ class TrezorPublicKeyRequest extends ATrezorInteractiveRequest {
   }
 
   @override
-  ATrezorAwaitedResponse getResponseFromUserInput(List<String> userInput) {
+  TrezorPublicKeyResponse getResponseFromUserInput(List<String> userInput) {
     return TrezorPublicKeyResponse.getDataFromUser(userInput);
   }
 

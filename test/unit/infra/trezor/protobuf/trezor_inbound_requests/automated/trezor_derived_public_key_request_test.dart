@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mirage/infra/trezor/protobuf/trezor_inbound_requests/automated/trezor_derived_public_key_request.dart';
+import 'package:mirage/infra/trezor/protobuf/trezor_inbound_requests/interactive/trezor_derived_public_key_request.dart';
 import 'package:mirage/infra/trezor/protobuf/trezor_outbound_responses/a_trezor_outbound_response.dart';
 import 'package:mirage/infra/trezor/protobuf/trezor_outbound_responses/awaited/trezor_public_key_response.dart';
 import 'package:mirage/infra/trezor/trezor_communication_notifier.dart';

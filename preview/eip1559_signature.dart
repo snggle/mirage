@@ -7,8 +7,8 @@ import 'wallet.dart';
 // ignore_for_file: avoid_print
 Future<void> main() async {
   // input derivation path and sign data here
-  List<int> numericDerivationPath = <int>[2147483692, 2147483708, 2147483648, 0, 1];
-  List<int> signData = <int>[2, 242, 131, 170, 54, 167, 40, 132, 89, 104, 47, 0, 133, 12, 220, 67, 189, 136, 130, 82, 8, 148, 83, 191, 10, 24, 117, 72, 115, 168, 16, 38, 37, 216, 34, 90, 246, 161, 90, 67, 66, 60, 135, 35, 134, 242, 111, 193, 0, 0, 128, 192];
+  List<int> numericDerivationPath = <int>[2147483692, 2147483708, 2147483648, 0, 0];
+  List<int> signData = <int>[2, 242, 131, 170, 54, 167, 117, 132, 89, 104, 47, 0, 133, 18, 54, 17, 108, 165, 130, 82, 8, 148, 83, 191, 10, 24, 117, 72, 115, 168, 16, 38, 37, 216, 34, 90, 246, 161, 90, 67, 66, 60, 135, 35, 134, 242, 111, 193, 0, 0, 128, 192];
 
   String derivationPath = _convertNumericDPToString(numericDerivationPath);
   LegacyHDWallet ethereumWallet = await _getWallet(derivationPath);

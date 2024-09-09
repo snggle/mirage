@@ -29,15 +29,6 @@ class _MainPageWrapperState extends State<MainPageWrapper> {
           ),
           body: Stack(
             children: <Widget>[
-              if (_mainPageCubit.activeWalletPublicKey != null)
-                Positioned(
-                  top: 10,
-                  left: 10,
-                  child: Text(
-                    'Active key: ${_mainPageCubit.activeWalletPublicKey!}',
-                    style: const TextStyle(color: Colors.grey),
-                  ),
-                ),
               if (mainPageState is MainPageEnabledState)
                 Positioned(
                   top: 10,

@@ -6,7 +6,6 @@ import 'package:mirage/views/pages/main_page_wrapper.dart';
 
 Future<void> main() async {
   await initLocator();
-  await globalLocator<TrezorCommunicationNotifier>().init();
 
   TrezorHttpServer trezorHttpServer = TrezorHttpServer();
   try {

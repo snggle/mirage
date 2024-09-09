@@ -87,7 +87,7 @@ class _AudioRecordingPageState extends State<AudioRecordingPage> {
               const Text('Received a correct message. You can proceed by clicking the button'),
               const SizedBox(height: 20),
               ElevatedButton.icon(
-                onPressed: widget.mainPageCubit.disableAudioTransmission,
+                onPressed: widget.mainPageCubit.completeInteractiveRequest,
                 label: const Text('Proceed'),
                 icon: const Icon(Icons.navigate_next_outlined),
               ),
