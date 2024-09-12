@@ -62,12 +62,12 @@ class _MainPageWrapperState extends State<MainPageWrapper> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       if (mainPageState is MainPageDisabledState) ...<Widget>[
-                        const EmptyPage(),
+                        EmptyPage(reconnectNeededBool: mainPageState.pubkeyModel == null),
                       ],
                       if (mainPageState is MainPageEnabledState) ...<Widget>[
                         AudioRecordingPage(
                           mainPageState: mainPageState,
-                          onSubmitted: _mainPageCubit.receiveRecordedMsg,
+                          onSubmitted: _mainPageCubit.processRecordedMsg,
                           onCompleted: _mainPageCubit.completeInteractiveRequest,
                         ),
                       ],

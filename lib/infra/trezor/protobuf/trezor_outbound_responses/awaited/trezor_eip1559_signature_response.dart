@@ -1,6 +1,8 @@
+import 'dart:typed_data';
+
+import 'package:codec_utils/codec_utils.dart';
 import 'package:mirage/infra/trezor/protobuf/messages_compiled/messages-ethereum.pb.dart';
 import 'package:mirage/infra/trezor/protobuf/trezor_outbound_responses/awaited/a_trezor_awaited_response.dart';
-import 'package:mirage/shared/utils/bytes_utils.dart';
 import 'package:protobuf/protobuf.dart';
 
 class TrezorEIP1559SignatureResponse extends ATrezorAwaitedResponse {
@@ -14,11 +16,14 @@ class TrezorEIP1559SignatureResponse extends ATrezorAwaitedResponse {
     required this.signatureS,
   });
 
-  factory TrezorEIP1559SignatureResponse.getDataFromUser(List<String> userInput) {
+  factory TrezorEIP1559SignatureResponse.fromSerializedCbor(Uint8List serializedCbor) {
+    CborEthSignature urRegistryEthSignature = CborEthSignature.fromSerializedCbor(serializedCbor);
+    Uint8List signature = urRegistryEthSignature.signature;
+
     return TrezorEIP1559SignatureResponse(
-      signatureV: int.parse(userInput[0]),
-      signatureR: BytesUtils.parseStringToList(userInput[1]),
-      signatureS: BytesUtils.parseStringToList(userInput[2]),
+      signatureV: signature[0],
+      signatureR: signature.sublist(1, 33),
+      signatureS: signature.sublist(33, 65),
     );
   }
 

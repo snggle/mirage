@@ -1,7 +1,10 @@
+import 'dart:typed_data';
+
+import 'package:codec_utils/codec_utils.dart';
 import 'package:mirage/infra/trezor/protobuf/messages_compiled/messages-bitcoin.pb.dart';
 import 'package:mirage/infra/trezor/protobuf/messages_compiled/messages-common.pb.dart';
 import 'package:mirage/infra/trezor/protobuf/trezor_outbound_responses/awaited/a_trezor_awaited_response.dart';
-import 'package:mirage/shared/utils/bytes_utils.dart';
+import 'package:mirage/shared/utils/cbor_utils.dart';
 import 'package:protobuf/protobuf.dart';
 
 class TrezorPublicKeyResponse extends ATrezorAwaitedResponse {
@@ -19,13 +22,15 @@ class TrezorPublicKeyResponse extends ATrezorAwaitedResponse {
     required this.xpub,
   });
 
-  factory TrezorPublicKeyResponse.getDataFromUser(List<String> userInput) {
+  factory TrezorPublicKeyResponse.fromSerializedCbor(Uint8List serializedCbor) {
+    CborCryptoHDKey cborCryptoHDKey = CborCryptoHDKey.fromSerializedCbor(serializedCbor);
+
     return TrezorPublicKeyResponse(
-      depth: int.parse(userInput[0]),
-      fingerprint: int.parse(userInput[1]),
-      chainCode: BytesUtils.parseStringToList(userInput[2]),
-      publicKey: BytesUtils.parseStringToList(userInput[3]),
-      xpub: userInput[4],
+      depth: cborCryptoHDKey.origin!.components.length,
+      fingerprint: cborCryptoHDKey.parentFingerprint!,
+      chainCode: cborCryptoHDKey.chainCode!,
+      publicKey: cborCryptoHDKey.keyData,
+      xpub: CborUtils.getXPub(cborCryptoHDKey),
     );
   }
 

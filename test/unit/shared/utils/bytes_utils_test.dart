@@ -19,21 +19,6 @@ void main() {
     });
   });
 
-  group('Tests of BytesUtils.convertBytesToHex()', () {
-    test('Should [return hex bytes] calculated from BYTES', () {
-      // Arrange
-      Uint8List actualBytesInput = Uint8List.fromList(<int>[215, 21, 5, 90]);
-
-      // Act
-      String actualHex = BytesUtils.convertBytesToHex(actualBytesInput);
-
-      // Assert
-      String expectedHex = 'd715055a';
-
-      expect(actualHex, expectedHex);
-    });
-  });
-
   group('Tests of BytesUtils.convertHexToInt()', () {
     test('Should [return int] calculated from HEX', () {
       // Arrange
@@ -46,21 +31,6 @@ void main() {
       int expectedInt = 1715004;
 
       expect(actualInt, expectedInt);
-    });
-  });
-
-  group('Tests of BytesUtils.convertHexToBytes()', () {
-    test('Should [return bytes] calculated from HEX', () {
-      // Arrange
-      String actualHexInput = '4d5e6f';
-
-      // Act
-      Uint8List actualBytes = BytesUtils.convertHexToBytes(actualHexInput);
-
-      // Assert
-      Uint8List expectedBytes = Uint8List.fromList(<int>[77, 94, 111]);
-
-      expect(actualBytes, expectedBytes);
     });
   });
 
@@ -168,22 +138,6 @@ void main() {
       Uint8List expectedMergedBytes = Uint8List.fromList(<int>[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
 
       expect(actualMergedBytes, expectedMergedBytes);
-    });
-  });
-
-  // TODO(Marcin): delete this method after prompt data input is replaced with Audio Protocol implementation
-  group('Tests of BytesUtils.parseStringToList()', () {
-    test('Should [return List<int>] given String input', () {
-      // Arrange
-      String actualString = '[2, 8, 500, 400, 17]';
-
-      // Act
-      List<int> actualList = BytesUtils.parseStringToList(actualString);
-
-      // Assert
-      List<int> expectedList = <int>[2, 8, 500, 400, 17];
-
-      expect(actualList, expectedList);
     });
   });
 }

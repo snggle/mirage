@@ -1,4 +1,8 @@
+import 'package:codec_utils/codec_utils.dart';
 import 'package:mirage/blocs/main_page_cubit/a_main_page_state.dart';
+import 'package:mirage/infra/trezor/protobuf/trezor_inbound_requests/interactive/trezor_eip1559_signature_request.dart';
+import 'package:mirage/infra/trezor/protobuf/trezor_inbound_requests/interactive/trezor_eth_msg_signature_request.dart';
+import 'package:mirage/infra/trezor/protobuf/trezor_inbound_requests/interactive/trezor_public_key_request.dart';
 import 'package:mirage/infra/trezor/trezor_event.dart';
 import 'package:mirage/shared/models/pubkey_model.dart';
 
@@ -24,11 +28,18 @@ class MainPageEnabledState extends AMainPageState {
 
   List<String> get description => activeEvent.trezorInteractiveRequest.description;
 
-  // TODO(Marcin): replace with "toSerializedCbor()" after CBOR implementation
-  Map<String, String> get audioRequestData => activeEvent.trezorInteractiveRequest.getRequestData();
-
-  // TODO(Marcin): temporary getter before CBOR implementation
-  List<String> get inputStructure => activeEvent.trezorInteractiveRequest.expectedResponseStructure;
+  String get audioRequestData {
+    switch (activeEvent.trezorInteractiveRequest) {
+      case TrezorPublicKeyRequest trezorPublicKeyRequest:
+        return HexCodec.encode(trezorPublicKeyRequest.toSerializedCbor());
+      case TrezorEIP1559SignatureRequest trezorEIP1559SignatureRequest:
+        return HexCodec.encode(trezorEIP1559SignatureRequest.toSerializedCbor(pubkeyModel: pubkeyModel));
+      case TrezorEthMsgSignatureRequest trezorEthMsgSignatureRequest:
+        return HexCodec.encode(trezorEthMsgSignatureRequest.toSerializedCbor(pubkeyModel: pubkeyModel));
+      default:
+        return HexCodec.encode(activeEvent.trezorInteractiveRequest.toSerializedCbor());
+    }
+  }
 
   @override
   List<Object?> get props => <Object?>[activeEvent, pubkeyModel];

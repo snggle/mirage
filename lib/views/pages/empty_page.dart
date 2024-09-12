@@ -1,18 +1,26 @@
 import 'package:flutter/material.dart';
 
 class EmptyPage extends StatelessWidget {
-  const EmptyPage({super.key});
+  final bool reconnectNeededBool;
+
+  const EmptyPage({required this.reconnectNeededBool, super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    return Column(
       mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
-        SizedBox(height: 30),
-        Text(
+        const SizedBox(height: 30),
+        const Text(
           'Trezor Virtualization',
         ),
+        if (reconnectNeededBool) ...<Widget>[
+          const SizedBox(height: 10),
+          const Text(
+            'Connect wallet',
+          ),
+        ],
       ],
     );
   }
