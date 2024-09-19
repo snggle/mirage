@@ -6,7 +6,6 @@ import 'package:mirage/infra/trezor/protobuf/messages_compiled/messages-ethereum
 import 'package:mirage/infra/trezor/protobuf/trezor_inbound_requests/interactive/a_trezor_interactive_request.dart';
 import 'package:mirage/infra/trezor/protobuf/trezor_outbound_responses/awaited/a_trezor_awaited_response.dart';
 import 'package:mirage/infra/trezor/protobuf/trezor_outbound_responses/awaited/trezor_eip1559_signature_response.dart';
-import 'package:mirage/shared/utils/app_logger.dart';
 import 'package:mirage/shared/utils/bytes_utils.dart';
 
 class TrezorEIP1559SignatureRequest extends ATrezorInteractiveRequest {
@@ -53,20 +52,35 @@ class TrezorEIP1559SignatureRequest extends ATrezorInteractiveRequest {
   }
 
   @override
-  ATrezorAwaitedResponse getResponseFromUser() {
-    _logRequestData();
-    return TrezorEIP1559SignatureResponse.getDataFromUser();
+  List<String> get description {
+    String amount = ethereumEIP1559Transaction.getAmount(cryptography_utils.TokenDenominationType.network).amount.toString();
+    return <String>['Token: $token', 'Sending $amount to 0x${ethereumEIP1559Transaction.to}'];
   }
 
-  void _logRequestData() {
-    String amount = ethereumEIP1559Transaction.getAmount(cryptography_utils.TokenDenominationType.network).amount.toString();
-    AppLogger().log(message: '*** Signing EIP1559 Transaction ***');
-    AppLogger().log(message: '*** Token: $token ***');
-    AppLogger().log(message: '*** Sending $amount to 0x${ethereumEIP1559Transaction.to} ***');
-    AppLogger().log(message: 'derivation path: ${derivationPath}');
-    AppLogger().log(message: 'sign data: ${ethereumEIP1559Transaction.serialize()}');
-    AppLogger().log(message: 'Enter the values');
+  @override
+  // TODO(Marcin): temporary getter before CBOR implementation
+  List<String> get expectedResponseStructure => <String>[
+    'Signature V',
+    'Signature R',
+    'Signature S',
+  ];
+
+  @override
+  // TODO(Marcin): replace with "toSerializedCbor()" after CBOR implementation
+  Map<String, String> getRequestData() {
+    return <String, String>{
+      'Derivation path': derivationPath.toString(),
+      'Sign data': ethereumEIP1559Transaction.serialize().toString(),
+    };
   }
+
+  @override
+  ATrezorAwaitedResponse getResponseFromUserInput(List<String> userInput) {
+    return TrezorEIP1559SignatureResponse.getDataFromUser(userInput);
+  }
+
+  @override
+  String get title => 'Signing EIP1559 Transaction';
 
   static String? _getToken(EthereumSignTxEIP1559 ethereumSignTxEIP1559) {
     String? token;

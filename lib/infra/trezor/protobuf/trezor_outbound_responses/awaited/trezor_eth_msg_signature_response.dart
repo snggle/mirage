@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:mirage/infra/trezor/protobuf/messages_compiled/messages-ethereum.pb.dart';
 import 'package:mirage/infra/trezor/protobuf/trezor_outbound_responses/awaited/a_trezor_awaited_response.dart';
 import 'package:mirage/shared/utils/bytes_utils.dart';
@@ -14,18 +12,10 @@ class TrezorEthMsgSignatureResponse extends ATrezorAwaitedResponse {
     required this.signature,
   });
 
-  factory TrezorEthMsgSignatureResponse.getDataFromUser() {
-    // TODO(Marcin): replace prompt data input with Audio Protocol implementation
-
-    stdout.write('Enter signature: ');
-    String signatureLine = stdin.readLineSync()!;
-
-    stdout.write('Enter address: ');
-    String addressLine = stdin.readLineSync()!;
-
+  factory TrezorEthMsgSignatureResponse.getDataFromUser(List<String> userInput) {
     return TrezorEthMsgSignatureResponse(
-      address: addressLine,
-      signature: BytesUtils.parseStringToList(signatureLine),
+      address: userInput[0],
+      signature: BytesUtils.parseStringToList(userInput[1]),
     );
   }
 

@@ -1,7 +1,7 @@
 name: mirage
 description: Desktop application connecting SNGGLE with PC
 publish_to: 'none'
-version: 0.0.7
+version: 0.0.8
 
 environment:
   sdk: "3.2.6"
@@ -31,10 +31,17 @@ dependencies:
   # https://pub.dev/packages/protobuf
   protobuf: 3.1.0
 
+  # Dart package containing implementation of UR (Uniform Resource) for QR code transfer functionality.
+  codec_utils:
+    git:
+      url: https://github.com/snggle/codec_utils.git
+      ref: master
+
   # Dart package containing utility methods for common cryptographic and blockchain-specific operations.
   cryptography_utils:
     git:
       url: https://github.com/snggle/cryptography_utils.git
+      ref: master
 
 dev_dependencies:
   flutter_test:
