@@ -1,16 +1,19 @@
 import 'dart:typed_data';
 
-import 'package:cryptography_utils/cryptography_utils.dart' as cryptography_utils;
+import 'package:codec_utils/codec_utils.dart';
+import 'package:cryptography_utils/cryptography_utils.dart';
 import 'package:mirage/infra/trezor/protobuf/messages_compiled/messages-ethereum-definitions.pb.dart';
 import 'package:mirage/infra/trezor/protobuf/messages_compiled/messages-ethereum.pb.dart';
 import 'package:mirage/infra/trezor/protobuf/trezor_inbound_requests/interactive/a_trezor_interactive_request.dart';
 import 'package:mirage/infra/trezor/protobuf/trezor_outbound_responses/awaited/a_trezor_awaited_response.dart';
 import 'package:mirage/infra/trezor/protobuf/trezor_outbound_responses/awaited/trezor_eip1559_signature_response.dart';
+import 'package:mirage/shared/models/pubkey_model.dart';
 import 'package:mirage/shared/utils/bytes_utils.dart';
+import 'package:mirage/shared/utils/cbor_utils.dart';
 
 class TrezorEIP1559SignatureRequest extends ATrezorInteractiveRequest {
   final bool waitingAgreedBool;
-  final cryptography_utils.EthereumEIP1559Transaction ethereumEIP1559Transaction;
+  final EthereumEIP1559Transaction ethereumEIP1559Transaction;
   final int dataLength;
   final List<int> derivationPath;
   final String? token;
@@ -24,7 +27,7 @@ class TrezorEIP1559SignatureRequest extends ATrezorInteractiveRequest {
   });
 
   factory TrezorEIP1559SignatureRequest.fromProtobufMsg(EthereumSignTxEIP1559 ethereumSignTxEIP1559) {
-    cryptography_utils.EthereumEIP1559Transaction ethereumEIP1559Transaction = cryptography_utils.EthereumEIP1559Transaction(
+    EthereumEIP1559Transaction ethereumEIP1559Transaction = EthereumEIP1559Transaction(
       chainId: BigInt.parse(ethereumSignTxEIP1559.chainId.toString()),
       nonce: BytesUtils.convertBytesToBigInt(ethereumSignTxEIP1559.nonce),
       maxPriorityFeePerGas: BytesUtils.convertBytesToBigInt(ethereumSignTxEIP1559.maxPriorityFee),
@@ -34,8 +37,8 @@ class TrezorEIP1559SignatureRequest extends ATrezorInteractiveRequest {
       value: BytesUtils.convertBytesToBigInt(ethereumSignTxEIP1559.value),
       data: Uint8List.fromList(ethereumSignTxEIP1559.dataInitialChunk),
       accessList: ethereumSignTxEIP1559.accessList.map((EthereumSignTxEIP1559_EthereumAccessList accessListBytesItem) {
-        return cryptography_utils.AccessListBytesItem(
-          BytesUtils.convertHexToBytes(accessListBytesItem.address),
+        return AccessListBytesItem(
+          HexCodec.decode(accessListBytesItem.address),
           accessListBytesItem.storageKeys.map((List<int> storageKey) {
             return Uint8List.fromList(storageKey);
           }).toList(),
@@ -47,36 +50,37 @@ class TrezorEIP1559SignatureRequest extends ATrezorInteractiveRequest {
       ethereumEIP1559Transaction: ethereumEIP1559Transaction,
       dataLength: ethereumSignTxEIP1559.dataLength,
       derivationPath: ethereumSignTxEIP1559.addressN,
-      token: _getToken(ethereumSignTxEIP1559) ?? ethereumEIP1559Transaction.getAmount(cryptography_utils.TokenDenominationType.network).denomination.toString(),
+      token: _getToken(ethereumSignTxEIP1559) ?? ethereumEIP1559Transaction.getAmount(TokenDenominationType.network).denomination.toString(),
     );
   }
 
   @override
   List<String> get description {
-    String amount = ethereumEIP1559Transaction.getAmount(cryptography_utils.TokenDenominationType.network).amount.toString();
+    String amount = ethereumEIP1559Transaction.getAmount(TokenDenominationType.network).amount.toString();
     return <String>['Token: $token', 'Sending $amount to 0x${ethereumEIP1559Transaction.to}'];
   }
 
   @override
-  // TODO(Marcin): temporary getter before CBOR implementation
-  List<String> get expectedResponseStructure => <String>[
-    'Signature V',
-    'Signature R',
-    'Signature S',
-  ];
+  Uint8List toSerializedCbor({PubkeyModel? pubkeyModel}) {
+    PubkeyModel derivedPubkeyModel = pubkeyModel!.derive(derivationPath.last);
+    List<CborPathComponent> cborPathComponents = CborUtils.convertToPathComponents(derivationPath);
+    CborCryptoKeypath cborCryptoKeypath = CborCryptoKeypath(components: cborPathComponents);
 
-  @override
-  // TODO(Marcin): replace with "toSerializedCbor()" after CBOR implementation
-  Map<String, String> getRequestData() {
-    return <String, String>{
-      'Derivation path': derivationPath.toString(),
-      'Sign data': ethereumEIP1559Transaction.serialize().toString(),
-    };
+    CborEthSignRequest cborEthSignRequest = CborEthSignRequest(
+      derivationPath: cborCryptoKeypath,
+      dataType: CborEthSignDataType.transactionData,
+      signData: ethereumEIP1559Transaction.serialize(),
+      chainId: ethereumEIP1559Transaction.chainId.toInt(),
+      address: derivedPubkeyModel.ethereumAddress,
+      requestId: Uint8List.fromList(<int>[1]),
+    );
+    return cborEthSignRequest.toSerializedCbor(includeTagBool: false);
   }
 
   @override
-  ATrezorAwaitedResponse getResponseFromUserInput(List<String> userInput) {
-    return TrezorEIP1559SignatureResponse.getDataFromUser(userInput);
+  Future<ATrezorAwaitedResponse> getResponseFromCborPayload(String payload, {PubkeyModel? pubkeyModel}) async {
+    Uint8List payloadBytes = HexCodec.decode(payload);
+    return TrezorEIP1559SignatureResponse.fromSerializedCbor(payloadBytes);
   }
 
   @override

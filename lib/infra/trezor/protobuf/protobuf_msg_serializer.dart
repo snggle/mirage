@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:codec_utils/codec_utils.dart';
 import 'package:mirage/infra/trezor/protobuf/messages_compiled/messages.pbenum.dart';
 import 'package:mirage/infra/trezor/protobuf/protobuf_msg_mapper.dart';
 import 'package:mirage/shared/utils/bytes_utils.dart';
@@ -28,7 +29,7 @@ import 'package:protobuf/protobuf.dart' as protobuf;
 /// Since the Trezor Bridge is integrated in Mirage, there is no need for magic constants and 64 bytes chunks.
 class ProtobufMsgSerializer {
   static protobuf.GeneratedMessage deserialize(String buffer) {
-    Uint8List inputBytes = BytesUtils.convertHexToBytes(buffer);
+    Uint8List inputBytes = HexCodec.decode(buffer);
     Uint8List msgContents = inputBytes.sublist(6, 6 + _getMsgSize(buffer));
     try {
       MessageType? messageType = MessageType.valueOf(_getMsgType(buffer));
@@ -48,7 +49,7 @@ class ProtobufMsgSerializer {
 
     Uint8List mergedBytes = BytesUtils.mergeBytes(<Uint8List>[msgTypeBytes, msgSizeBytes, msgBuffer]);
 
-    String buffer = BytesUtils.convertBytesToHex(mergedBytes);
+    String buffer = HexCodec.encode(mergedBytes);
     return buffer;
   }
 

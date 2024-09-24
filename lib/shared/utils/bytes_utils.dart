@@ -1,34 +1,16 @@
 import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:codec_utils/codec_utils.dart';
+
 class BytesUtils {
   static BigInt convertBytesToBigInt(List<int> bytes, {Endian endian = Endian.big}) {
     return BigInt.from(convertBytesToInt(bytes, endian: endian));
   }
 
-  static String convertBytesToHex(List<int> bytes) {
-    return bytes.map((int byte) => byte.toRadixString(16).padLeft(2, '0')).join();
-  }
-
   static int convertHexToInt(String hex, {Endian endian = Endian.big}) {
-    Uint8List bytes = convertHexToBytes(hex);
+    Uint8List bytes = HexCodec.decode(hex);
     return convertBytesToInt(bytes, endian: endian);
-  }
-
-  static Uint8List convertHexToBytes(String hex) {
-    if (hex.length % 2 != 0) {
-      throw const FormatException('Invalid hexadecimal string length');
-    }
-
-    int length = hex.length ~/ 2;
-    Uint8List result = Uint8List(length);
-
-    for (int i = 0; i < length; i++) {
-      String byte = hex.substring(i * 2, i * 2 + 2);
-      result[i] = int.parse(byte, radix: 16);
-    }
-
-    return result;
   }
 
   static int convertBytesToInt(List<int> bytes, {Endian endian = Endian.big}) {
@@ -63,11 +45,5 @@ class BytesUtils {
 
   static Uint8List mergeBytes(List<List<int>> bytesLists) {
     return Uint8List.fromList(bytesLists.expand((List<int> list) => list).toList());
-  }
-
-  // TODO(Marcin): delete this method after prompt data input is replaced with Audio Protocol implementation
-  static List<int> parseStringToList(String input) {
-    String clearInput = input.replaceAll('[', '').replaceAll(']', '').replaceAll(' ', '');
-    return clearInput.split(',').map(int.parse).toList();
   }
 }

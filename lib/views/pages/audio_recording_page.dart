@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:mirage/blocs/main_page_cubit/states/main_page_disabled_state.dart';
 import 'package:mirage/blocs/main_page_cubit/states/main_page_enabled_state.dart';
 import 'package:mirage/blocs/main_page_cubit/states/main_page_recorded_state.dart';
-import 'package:mirage/views/pages/request_data_widget.dart';
+import 'package:mirage/views/pages/audio_result_widget.dart';
 import 'package:mirage/views/pages/request_description_widget.dart';
 
 class AudioRecordingPage extends StatefulWidget {
   final MainPageEnabledState mainPageState;
-  final ValueChanged<List<String>> onSubmitted;
+  final ValueChanged<String> onSubmitted;
   final VoidCallback onCompleted;
 
   const AudioRecordingPage({
@@ -23,18 +23,6 @@ class AudioRecordingPage extends StatefulWidget {
 
 class _AudioRecordingPageState extends State<AudioRecordingPage> {
   bool _showAdditionalText = false;
-  late List<TextFormField> textFields;
-
-  @override
-  void initState() {
-    textFields = widget.mainPageState.inputStructure
-        .map((String label) => TextFormField(
-              decoration: InputDecoration(labelText: label),
-              controller: TextEditingController(),
-            ))
-        .toList();
-    super.initState();
-  }
 
   @override
   void didUpdateWidget(covariant AudioRecordingPage oldWidget) {
@@ -46,6 +34,7 @@ class _AudioRecordingPageState extends State<AudioRecordingPage> {
 
   @override
   Widget build(BuildContext context) {
+    TextEditingController textEditingController = TextEditingController();
     List<String>? description = widget.mainPageState.description;
 
     return Center(
@@ -70,39 +59,29 @@ class _AudioRecordingPageState extends State<AudioRecordingPage> {
                 child: const Text('Play audio'),
               ),
               const SizedBox(height: 10),
-              if (_showAdditionalText)
-                RequestDataWidget(
-                  audioRequestData: widget.mainPageState.audioRequestData,
-                ),
+              if (_showAdditionalText) SelectableText(widget.mainPageState.audioRequestData),
               const SizedBox(height: 20),
-              Column(
-                children: textFields,
+              TextFormField(
+                controller: textEditingController,
               ),
               const SizedBox(height: 20),
               ElevatedButton.icon(
-                onPressed: () => widget.onSubmitted(_mapTextFieldsToList(textFields)),
+                onPressed: () => widget.onSubmitted(textEditingController.text),
                 label: const Text('Submit'),
                 icon: const Icon(Icons.navigate_next_outlined),
               ),
               const SizedBox(height: 40),
             ],
             if (widget.mainPageState is MainPageRecordedState) ...<Widget>[
-              const Text('The message was recorded. You can proceed by clicking the button'),
-              const SizedBox(height: 20),
-              ElevatedButton.icon(
-                onPressed: widget.onCompleted,
-                label: const Text('Proceed'),
-                icon: const Icon(Icons.navigate_next_outlined),
+              AudioResultWidget(
+                recordValidBool: (widget.mainPageState as MainPageRecordedState).recordValidBool,
+                onCompleted: widget.onCompleted,
               ),
             ],
           ],
         ),
       ),
     );
-  }
-
-  List<String> _mapTextFieldsToList(List<TextFormField> textFields) {
-    return textFields.map((TextFormField e) => e.controller!.text).toList();
   }
 
   void _toggleTextVisibility() {
