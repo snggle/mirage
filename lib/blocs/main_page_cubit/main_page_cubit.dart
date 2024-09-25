@@ -6,7 +6,7 @@ import 'package:mirage/blocs/main_page_cubit/states/main_page_recorded_state.dar
 import 'package:mirage/config/locator.dart';
 import 'package:mirage/infra/services/pubkey_service.dart';
 import 'package:mirage/infra/trezor/protobuf/trezor_inbound_requests/interactive/a_trezor_interactive_request.dart';
-import 'package:mirage/infra/trezor/protobuf/trezor_inbound_requests/interactive/trezor_eip1559_signature_request.dart';
+import 'package:mirage/infra/trezor/protobuf/trezor_inbound_requests/interactive/multipart/trezor_eip1559_signature_request.dart';
 import 'package:mirage/infra/trezor/protobuf/trezor_inbound_requests/interactive/trezor_eth_msg_signature_request.dart';
 import 'package:mirage/infra/trezor/protobuf/trezor_inbound_requests/interactive/trezor_public_key_request.dart';
 import 'package:mirage/infra/trezor/protobuf/trezor_outbound_responses/awaited/a_trezor_awaited_response.dart';

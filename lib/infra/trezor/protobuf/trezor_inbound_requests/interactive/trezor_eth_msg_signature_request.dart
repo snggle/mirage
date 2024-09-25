@@ -9,19 +9,16 @@ import 'package:mirage/shared/models/pubkey_model.dart';
 import 'package:mirage/shared/utils/cbor_utils.dart';
 
 class TrezorEthMsgSignatureRequest extends ATrezorInteractiveRequest {
-  final bool waitingAgreedBool;
   final List<int> derivationPath;
   final List<int> message;
 
   TrezorEthMsgSignatureRequest({
-    required this.waitingAgreedBool,
     required this.derivationPath,
     required this.message,
   });
 
   factory TrezorEthMsgSignatureRequest.fromProtobufMsg(EthereumSignMessage ethereumSignMessage) {
     return TrezorEthMsgSignatureRequest(
-      waitingAgreedBool: false,
       derivationPath: ethereumSignMessage.addressN,
       message: ethereumSignMessage.message,
     );

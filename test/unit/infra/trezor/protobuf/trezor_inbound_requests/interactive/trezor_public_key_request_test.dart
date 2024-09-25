@@ -11,7 +11,6 @@ Future<void> main() async {
     test('Should [return TrezorPublicKeyResponse] containing derived public key info', () async {
       // Arrange
       TrezorPublicKeyRequest actualTrezorPublicKeyRequest = TrezorPublicKeyRequest(
-        waitingAgreedBool: false,
         derivationPath: const <int>[2147483692, 2147483708, 2147483648, 0, 0],
       );
 

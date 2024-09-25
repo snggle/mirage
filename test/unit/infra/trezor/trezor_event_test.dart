@@ -11,7 +11,6 @@ void main() {
       // Arrange
       TrezorEvent actualTrezorEvent = TrezorEvent(
         TrezorPublicKeyRequest(
-          waitingAgreedBool: false,
           derivationPath: const <int>[2147483692, 2147483708, 2147483648, 0, 0],
         ),
       );
@@ -50,7 +49,6 @@ void main() {
       // Arrange
       TrezorEvent actualTrezorEvent = TrezorEvent(
         TrezorPublicKeyRequest(
-          waitingAgreedBool: false,
           derivationPath: const <int>[2147483692, 2147483708, 2147483648, 0, 0],
         ),
       );

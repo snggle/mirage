@@ -5,9 +5,10 @@ import 'package:mirage/infra/trezor/protobuf/messages_compiled/messages-manageme
 import 'package:mirage/infra/trezor/protobuf/trezor_inbound_requests/automated/trezor_device_address_request.dart';
 import 'package:mirage/infra/trezor/protobuf/trezor_inbound_requests/automated/trezor_init_request.dart';
 import 'package:mirage/infra/trezor/protobuf/trezor_inbound_requests/automated/trezor_properties_request.dart';
-import 'package:mirage/infra/trezor/protobuf/trezor_inbound_requests/interactive/trezor_eip1559_signature_request.dart';
+import 'package:mirage/infra/trezor/protobuf/trezor_inbound_requests/interactive/multipart/trezor_eip1559_signature_request.dart';
 import 'package:mirage/infra/trezor/protobuf/trezor_inbound_requests/interactive/trezor_eth_msg_signature_request.dart';
 import 'package:mirage/infra/trezor/protobuf/trezor_inbound_requests/interactive/trezor_public_key_request.dart';
+import 'package:mirage/infra/trezor/protobuf/trezor_inbound_requests/supplementary/trezor_eip1559_data_supply.dart';
 import 'package:protobuf/protobuf.dart' as protobuf;
 
 abstract class ATrezorInboundRequest extends Equatable {
@@ -19,6 +20,8 @@ abstract class ATrezorInboundRequest extends Equatable {
         return TrezorPropertiesRequest();
       case GetAddress _:
         return TrezorDeviceAddressRequest();
+      case EthereumTxAck ethereumTxAck:
+        return TrezorEIP1559DataSupply.fromProtobufMsg(ethereumTxAck);
       case GetPublicKey getPublicKey:
         return TrezorPublicKeyRequest.fromProtobufMsg(getPublicKey);
       case EthereumSignMessage ethereumSignMessage:

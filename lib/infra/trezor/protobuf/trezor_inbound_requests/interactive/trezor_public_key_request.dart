@@ -8,17 +8,14 @@ import 'package:mirage/infra/trezor/protobuf/trezor_outbound_responses/awaited/t
 import 'package:mirage/shared/utils/cbor_utils.dart';
 
 class TrezorPublicKeyRequest extends ATrezorInteractiveRequest {
-  final bool waitingAgreedBool;
   final List<int> derivationPath;
 
   TrezorPublicKeyRequest({
-    required this.waitingAgreedBool,
     required this.derivationPath,
   });
 
   factory TrezorPublicKeyRequest.fromProtobufMsg(GetPublicKey getPublicKey) {
     return TrezorPublicKeyRequest(
-      waitingAgreedBool: false,
       derivationPath: getPublicKey.addressN,
     );
   }

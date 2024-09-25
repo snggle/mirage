@@ -1,6 +1,6 @@
 import 'package:codec_utils/codec_utils.dart';
 import 'package:mirage/blocs/main_page_cubit/a_main_page_state.dart';
-import 'package:mirage/infra/trezor/protobuf/trezor_inbound_requests/interactive/trezor_eip1559_signature_request.dart';
+import 'package:mirage/infra/trezor/protobuf/trezor_inbound_requests/interactive/multipart/trezor_eip1559_signature_request.dart';
 import 'package:mirage/infra/trezor/protobuf/trezor_inbound_requests/interactive/trezor_eth_msg_signature_request.dart';
 import 'package:mirage/infra/trezor/protobuf/trezor_inbound_requests/interactive/trezor_public_key_request.dart';
 import 'package:mirage/infra/trezor/trezor_event.dart';
