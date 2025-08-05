@@ -1,4 +1,5 @@
-import 'package:codec_utils/codec_utils.dart';
+import 'dart:typed_data';
+
 import 'package:mirage/blocs/main_page_cubit/a_main_page_state.dart';
 import 'package:mirage/infra/trezor/api_methods/trezor_inbound_requests/trezor_eip1559_signature_request.dart';
 import 'package:mirage/infra/trezor/api_methods/trezor_inbound_requests/trezor_eth_msg_signature_request.dart';
@@ -7,11 +8,11 @@ import 'package:mirage/infra/trezor/ws/trezor_ws_event.dart';
 import 'package:mirage/shared/models/pubkey_model.dart';
 
 class MainPageEnabledState extends AMainPageState {
-  final TrezorWsEvent activeEvent;
+  final TrezorWsEvent activeWsEvent;
   final bool repeatedAttemptBool;
 
   const MainPageEnabledState({
-    required this.activeEvent,
+    required this.activeWsEvent,
     this.repeatedAttemptBool = false,
     super.pubkeyModel,
   });
@@ -19,28 +20,28 @@ class MainPageEnabledState extends AMainPageState {
   @override
   AMainPageState copyWith({PubkeyModel? pubkeyModel}) {
     return MainPageEnabledState(
-      activeEvent: activeEvent,
+      activeWsEvent: activeWsEvent,
       pubkeyModel: pubkeyModel,
     );
   }
 
-  String get title => activeEvent.trezorInboundRequest.title;
+  String get title => activeWsEvent.trezorInboundRequest.title;
 
-  List<String> get description => activeEvent.trezorInboundRequest.description;
+  List<String> get description => activeWsEvent.trezorInboundRequest.description;
 
-  String get audioRequestData {
-    switch (activeEvent.trezorInboundRequest) {
+  Uint8List get audioRequestData {
+    switch (activeWsEvent.trezorInboundRequest) {
       case TrezorPublicKeyRequest trezorPublicKeyRequest:
-        return HexCodec.encode(trezorPublicKeyRequest.toSerializedCbor());
+        return trezorPublicKeyRequest.toSerializedCbor();
       case TrezorEIP1559SignatureRequest trezorEIP1559SignatureRequest:
-        return HexCodec.encode(trezorEIP1559SignatureRequest.toSerializedCbor(pubkeyModel: pubkeyModel));
+        return trezorEIP1559SignatureRequest.toSerializedCbor(pubkeyModel: pubkeyModel);
       case TrezorEthMsgSignatureRequest trezorEthMsgSignatureRequest:
-        return HexCodec.encode(trezorEthMsgSignatureRequest.toSerializedCbor(pubkeyModel: pubkeyModel));
+        return trezorEthMsgSignatureRequest.toSerializedCbor(pubkeyModel: pubkeyModel);
       default:
-        return HexCodec.encode(activeEvent.trezorInboundRequest.toSerializedCbor());
+        return activeWsEvent.trezorInboundRequest.toSerializedCbor();
     }
   }
 
   @override
-  List<Object?> get props => <Object?>[activeEvent, pubkeyModel];
+  List<Object?> get props => <Object?>[activeWsEvent, pubkeyModel];
 }

@@ -21,9 +21,13 @@ class TrezorPublicKeyRequest extends ATrezorInteractiveRequest {
   }
 
   @override
-  List<String> get description => <String>[];
+  List<String> get description => <String>[
+        'open Snggle',
+        'click "Connect wallet" button with "Audio interface" selected',
+        'emit audio',
+      ];
 
-  TrezorPublicKeyResponse getDerivedResponse(Secp256k1PublicKey secp256k1publicKey) {
+  TrezorPublicKeyResponse fromSecp256k1PublicKey(Secp256k1PublicKey secp256k1publicKey) {
     return TrezorPublicKeyResponse(
       depth: derivationPath.length,
       fingerprint: secp256k1publicKey.metadata.parentFingerprint!.toInt(),
@@ -37,12 +41,11 @@ class TrezorPublicKeyRequest extends ATrezorInteractiveRequest {
   Uint8List toSerializedCbor() {
     List<CborPathComponent> pathComponents = CborUtils.convertToPathComponents(derivationPath);
     CborCryptoKeypath urRegistryCryptoKeypath = CborCryptoKeypath(components: pathComponents);
-    return urRegistryCryptoKeypath.toSerializedCbor(includeTagBool: false);
+    return urRegistryCryptoKeypath.toSerializedCbor(includeTagBool: true);
   }
 
   @override
-  Future<TrezorPublicKeyResponse> getResponseFromCborPayload(String payload) async {
-    Uint8List payloadBytes = HexCodec.decode(payload);
+  Future<TrezorPublicKeyResponse> getResponseFromCborPayload(Uint8List payloadBytes) async {
     return TrezorPublicKeyResponse.fromSerializedCbor(payloadBytes);
   }
 

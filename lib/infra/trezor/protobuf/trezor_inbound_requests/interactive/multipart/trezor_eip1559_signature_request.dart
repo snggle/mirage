@@ -98,12 +98,11 @@ class TrezorEIP1559SignatureRequest extends ATrezorMultipartInteractiveRequest {
       address: derivedPubkeyModel.ethereumAddress,
       requestId: Uint8List.fromList(<int>[1]),
     );
-    return cborEthSignRequest.toSerializedCbor(includeTagBool: false);
+    return cborEthSignRequest.toSerializedCbor(includeTagBool: true);
   }
 
   @override
-  Future<ATrezorAwaitedResponse> getResponseFromCborPayload(String payload, {PubkeyModel? pubkeyModel}) async {
-    Uint8List payloadBytes = HexCodec.decode(payload);
+  Future<ATrezorAwaitedResponse> getResponseFromCborPayload(Uint8List payloadBytes) async {
     return TrezorEIP1559SignatureResponse.fromSerializedCbor(payloadBytes);
   }
 

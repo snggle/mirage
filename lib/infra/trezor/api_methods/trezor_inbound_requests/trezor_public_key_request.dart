@@ -29,7 +29,11 @@ class TrezorPublicKeyRequest extends ATrezorInboundRequest {
   }
 
   @override
-  List<String> get description => <String>[];
+  List<String> get description => <String>[
+    'open Snggle',
+    'click "Connect wallet" button with "Audio interface" selected',
+    'emit audio',
+  ];
 
   @override
   Uint8List toSerializedCbor() {

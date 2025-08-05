@@ -44,7 +44,7 @@ Future<void> main() async {
       );
 
       // Act
-      ATrezorOutboundResponse actualTrezorOutboundResponse = actualTrezorPublicKeyRequest.getDerivedResponse(actualSecp256k1PublicKey);
+      ATrezorOutboundResponse actualTrezorOutboundResponse = actualTrezorPublicKeyRequest.fromSecp256k1PublicKey(actualSecp256k1PublicKey);
 
       // Assert
       ATrezorOutboundResponse expectedTrezorOutboundResponse = TrezorPublicKeyResponse(
