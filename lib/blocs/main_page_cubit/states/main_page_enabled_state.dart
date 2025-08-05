@@ -1,4 +1,5 @@
-import 'package:codec_utils/codec_utils.dart';
+import 'dart:typed_data';
+
 import 'package:mirage/blocs/main_page_cubit/a_main_page_state.dart';
 import 'package:mirage/infra/trezor/protobuf/trezor_inbound_requests/interactive/multipart/trezor_eip1559_signature_request.dart';
 import 'package:mirage/infra/trezor/protobuf/trezor_inbound_requests/interactive/trezor_eth_msg_signature_request.dart';
@@ -28,16 +29,16 @@ class MainPageEnabledState extends AMainPageState {
 
   List<String> get description => activeEvent.trezorInteractiveRequest.description;
 
-  String get audioRequestData {
+  Uint8List get audioRequestData {
     switch (activeEvent.trezorInteractiveRequest) {
       case TrezorPublicKeyRequest trezorPublicKeyRequest:
-        return HexCodec.encode(trezorPublicKeyRequest.toSerializedCbor());
+        return trezorPublicKeyRequest.toSerializedCbor();
       case TrezorEIP1559SignatureRequest trezorEIP1559SignatureRequest:
-        return HexCodec.encode(trezorEIP1559SignatureRequest.toSerializedCbor(pubkeyModel: pubkeyModel));
+        return trezorEIP1559SignatureRequest.toSerializedCbor(pubkeyModel: pubkeyModel);
       case TrezorEthMsgSignatureRequest trezorEthMsgSignatureRequest:
-        return HexCodec.encode(trezorEthMsgSignatureRequest.toSerializedCbor(pubkeyModel: pubkeyModel));
+        return trezorEthMsgSignatureRequest.toSerializedCbor(pubkeyModel: pubkeyModel);
       default:
-        return HexCodec.encode(activeEvent.trezorInteractiveRequest.toSerializedCbor());
+        return activeEvent.trezorInteractiveRequest.toSerializedCbor();
     }
   }
 

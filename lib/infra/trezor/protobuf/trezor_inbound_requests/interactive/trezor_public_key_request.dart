@@ -37,12 +37,11 @@ class TrezorPublicKeyRequest extends ATrezorInteractiveRequest {
   Uint8List toSerializedCbor() {
     List<CborPathComponent> pathComponents = CborUtils.convertToPathComponents(derivationPath);
     CborCryptoKeypath urRegistryCryptoKeypath = CborCryptoKeypath(components: pathComponents);
-    return urRegistryCryptoKeypath.toSerializedCbor(includeTagBool: false);
+    return urRegistryCryptoKeypath.toSerializedCbor(includeTagBool: true);
   }
 
   @override
-  Future<TrezorPublicKeyResponse> getResponseFromCborPayload(String payload) async {
-    Uint8List payloadBytes = HexCodec.decode(payload);
+  Future<TrezorPublicKeyResponse> getResponseFromCborPayload(Uint8List payloadBytes) async {
     return TrezorPublicKeyResponse.fromSerializedCbor(payloadBytes);
   }
 

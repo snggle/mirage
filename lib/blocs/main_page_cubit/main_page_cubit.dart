@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mirage/blocs/main_page_cubit/a_main_page_state.dart';
 import 'package:mirage/blocs/main_page_cubit/states/main_page_disabled_state.dart';
@@ -30,20 +32,20 @@ class MainPageCubit extends Cubit<AMainPageState> {
     return super.close();
   }
 
-  Future<void> processRecordedMsg(String userData) async {
+  Future<void> processRecordedMsg(Uint8List recordedMsgUint8List) async {
     TrezorEvent activeEvent = (state as MainPageEnabledState).activeEvent;
     ATrezorAwaitedResponse? trezorAwaitedResponse;
 
     try {
       switch (activeEvent.trezorInteractiveRequest) {
         case TrezorPublicKeyRequest trezorPublicKeyRequest:
-          trezorAwaitedResponse = await trezorPublicKeyRequest.getResponseFromCborPayload(userData);
+          trezorAwaitedResponse = await trezorPublicKeyRequest.getResponseFromCborPayload(recordedMsgUint8List);
           await _pubkeyService.saveXPub((trezorAwaitedResponse as TrezorPublicKeyResponse).xpub);
           await loadPubkey();
         case TrezorEIP1559SignatureRequest trezorEIP1559SignatureRequest:
-          trezorAwaitedResponse = await trezorEIP1559SignatureRequest.getResponseFromCborPayload(userData, pubkeyModel: state.pubkeyModel);
+          trezorAwaitedResponse = await trezorEIP1559SignatureRequest.getResponseFromCborPayload(recordedMsgUint8List);
         case TrezorEthMsgSignatureRequest trezorEthMsgSignatureRequest:
-          trezorAwaitedResponse = await trezorEthMsgSignatureRequest.getResponseFromCborPayload(userData, pubkeyModel: state.pubkeyModel);
+          trezorAwaitedResponse = await trezorEthMsgSignatureRequest.getResponseFromCborPayload(recordedMsgUint8List, pubkeyModel: state.pubkeyModel);
       }
     } catch (e) {
       trezorAwaitedResponse = null;
