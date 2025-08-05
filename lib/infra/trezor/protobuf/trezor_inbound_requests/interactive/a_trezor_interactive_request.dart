@@ -6,7 +6,7 @@ import 'package:mirage/infra/trezor/protobuf/trezor_outbound_responses/awaited/a
 abstract class ATrezorInteractiveRequest extends ATrezorInboundRequest {
   List<String> get description;
 
-  Future<ATrezorAwaitedResponse> getResponseFromCborPayload(String payload);
+  Future<ATrezorAwaitedResponse> getResponseFromCborPayload(Uint8List payloadBytes);
 
   Uint8List toSerializedCbor();
 

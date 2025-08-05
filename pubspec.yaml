@@ -31,6 +31,10 @@ dependencies:
   # https://pub.dev/packages/protobuf
   protobuf: 3.1.0
 
+  # A library to get Audio Devices on Windows.
+  # https://pub.dev/packages/win32audio
+  win32audio: 1.4.0
+
   # Dart package containing implementation of UR (Uniform Resource) for QR code transfer functionality.
   codec_utils:
     git:
@@ -42,6 +46,12 @@ dependencies:
     git:
       url: https://github.com/snggle/cryptography_utils.git
       ref: master
+
+  # Data Over Audio
+  mrumru:
+    git:
+      url: git@github.com:snggle/mrumru.git
+      ref: dev
 
 dev_dependencies:
   flutter_test:
