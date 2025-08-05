@@ -1,11 +1,9 @@
 import 'dart:typed_data';
 
-import 'package:codec_utils/codec_utils.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mirage/blocs/main_page_cubit/a_main_page_state.dart';
 import 'package:mirage/blocs/main_page_cubit/states/main_page_disabled_state.dart';
 import 'package:mirage/blocs/main_page_cubit/states/main_page_enabled_state.dart';
-import 'package:mirage/blocs/main_page_cubit/states/main_page_recorded_state.dart';
 import 'package:mirage/config/locator.dart';
 import 'package:mirage/infra/services/pubkey_service.dart';
 import 'package:mirage/infra/trezor/api_methods/trezor_inbound_requests/trezor_eip1559_signature_request.dart';
@@ -33,10 +31,8 @@ class MainPageCubit extends Cubit<AMainPageState> {
     return super.close();
   }
 
-  Future<void> processRecordedMsg(String userData) async {
-    Uint8List recordedMsgUint8List = HexCodec.decode(userData);
-
-    TrezorWsEvent activeEvent = (state as MainPageEnabledState).activeEvent;
+  Future<void> processRecordedMsg(Uint8List recordedMsgUint8List) async {
+    TrezorWsEvent activeEvent = (state as MainPageEnabledState).activeWsEvent;
     ATrezorOutboundResponse? trezorOutboundResponse;
 
     try {
@@ -55,23 +51,13 @@ class MainPageCubit extends Cubit<AMainPageState> {
       trezorOutboundResponse = TrezorErrorResponse(code: 'TREZOR_EXCEPTION', message: e.toString());
     }
 
-    emit(MainPageRecordedState(
-      trezorResponse: trezorOutboundResponse,
-      activeEvent: (state as MainPageEnabledState).activeEvent,
-      pubkeyModel: state.pubkeyModel,
-    ));
-  }
-
-  Future<void> completeInteractiveRequest() async {
-    MainPageRecordedState recordedState = state as MainPageRecordedState;
-    TrezorWsEvent activeEvent = recordedState.activeEvent;
-
-    if (recordedState.recordValidBool) {
-      activeEvent.resolve(recordedState.trezorResponse!);
+    if (trezorOutboundResponse != null) {
+      activeEvent.resolve(trezorOutboundResponse);
     } else {
       await _fetchResponseFromSnggle(activeEvent, repeatedAttemptBool: true);
     }
   }
+
 
   Future<void> loadPubkey() async {
     try {
@@ -86,7 +72,7 @@ class MainPageCubit extends Cubit<AMainPageState> {
   Future<void> cancel() async {
     switch (state) {
       case MainPageEnabledState mainPageEnabledState:
-        mainPageEnabledState.activeEvent.reject('Operation canceled');
+        mainPageEnabledState.activeWsEvent.reject('Operation canceled');
       default:
         emit(MainPageDisabledState(pubkeyModel: state.pubkeyModel));
     }
@@ -108,7 +94,7 @@ class MainPageCubit extends Cubit<AMainPageState> {
 
   Future<void> _fetchResponseFromSnggle(TrezorWsEvent activeEvent, {bool repeatedAttemptBool = false}) async {
     emit(
-      MainPageEnabledState(activeEvent: activeEvent, pubkeyModel: state.pubkeyModel, repeatedAttemptBool: repeatedAttemptBool),
+      MainPageEnabledState(activeWsEvent: activeEvent, pubkeyModel: state.pubkeyModel, repeatedAttemptBool: repeatedAttemptBool),
     );
   }
 }

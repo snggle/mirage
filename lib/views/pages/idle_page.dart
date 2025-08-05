@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-class EmptyPage extends StatelessWidget {
+class IdlePage extends StatelessWidget {
   final bool reconnectNeededBool;
 
-  const EmptyPage({required this.reconnectNeededBool, super.key});
+  const IdlePage({required this.reconnectNeededBool, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -13,12 +13,12 @@ class EmptyPage extends StatelessWidget {
       children: <Widget>[
         const SizedBox(height: 30),
         const Text(
-          'Trezor Virtualization',
+          'Mirage is waiting for your actions on MetaMask',
         ),
         if (reconnectNeededBool) ...<Widget>[
           const SizedBox(height: 10),
           const Text(
-            'Connect wallet',
+            'Connect your wallet to MetaMask',
           ),
         ],
       ],

@@ -6,14 +6,14 @@ import 'package:mirage/infra/trezor/protobuf/trezor_outbound_responses/awaited/a
 import 'package:protobuf/protobuf.dart';
 
 class TrezorEIP1559SignatureResponse extends ATrezorAwaitedResponse {
-  final int signatureV;
   final List<int> signatureR;
   final List<int> signatureS;
+  final int signatureV;
 
   TrezorEIP1559SignatureResponse({
-    required this.signatureV,
     required this.signatureR,
     required this.signatureS,
+    required this.signatureV,
   });
 
   factory TrezorEIP1559SignatureResponse.fromSerializedCbor(Uint8List serializedCbor) {
@@ -21,21 +21,21 @@ class TrezorEIP1559SignatureResponse extends ATrezorAwaitedResponse {
     Uint8List signature = urRegistryEthSignature.signature;
 
     return TrezorEIP1559SignatureResponse(
-      signatureV: signature[0],
-      signatureR: signature.sublist(1, 33),
-      signatureS: signature.sublist(33, 65),
+      signatureR: signature.sublist(0, 32),
+      signatureS: signature.sublist(32, 64),
+      signatureV: signature[64],
     );
   }
 
   @override
   GeneratedMessage toProtobufMsg() {
     return EthereumTxRequest(
-      signatureV: signatureV,
       signatureR: signatureR,
       signatureS: signatureS,
+      signatureV: signatureV,
     );
   }
 
   @override
-  List<Object?> get props => <Object>[signatureV, signatureR, signatureS];
+  List<Object?> get props => <Object>[signatureR, signatureS, signatureV];
 }
