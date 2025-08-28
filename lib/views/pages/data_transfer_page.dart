@@ -11,7 +11,7 @@ import 'package:mirage/blocs/receive_section_cubit/states/receive_section_record
 import 'package:mirage/blocs/send_section_cubit/send_section_cubit.dart';
 import 'package:mirage/blocs/send_section_cubit/states/send_section_emitting_state.dart';
 import 'package:mirage/views/pages/audio_result_widget.dart';
-import 'package:mirage/views/pages/receive_section.dart';
+import 'package:mirage/views/pages/audio_recording_section.dart';
 import 'package:mirage/views/pages/request_description_widget.dart';
 import 'package:mirage/views/pages/send_section.dart';
 
@@ -83,7 +83,7 @@ class _DataTransferPageState extends State<DataTransferPage> {
                       sectionBlockedBool: _receiveSectionCubit.state is ReceiveSectionRecordingState,
                     ),
                     const SizedBox(height: 20),
-                    ReceiveSection(
+                    AudioRecordingSection(
                       onSubmitted: widget.onSubmitted,
                       isDeviceListEmpty: widget.isDeviceListEmpty,
                       receiveSectionCubit: _receiveSectionCubit,

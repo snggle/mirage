@@ -7,13 +7,13 @@ import 'package:mirage/blocs/receive_section_cubit/receive_section_cubit.dart';
 import 'package:mirage/blocs/receive_section_cubit/states/receive_section_recording_state.dart';
 import 'package:mirage/blocs/receive_section_cubit/states/receive_section_result_state.dart';
 
-class ReceiveSection extends StatefulWidget {
+class AudioRecordingSection extends StatefulWidget {
   final bool sectionBlockedBool;
   final ReceiveSectionCubit receiveSectionCubit;
   final ValueChanged<Uint8List> onSubmitted;
   final Future<bool> Function() isDeviceListEmpty;
 
-  const ReceiveSection({
+  const AudioRecordingSection({
     required this.sectionBlockedBool,
     required this.receiveSectionCubit,
     required this.onSubmitted,
@@ -22,10 +22,10 @@ class ReceiveSection extends StatefulWidget {
   });
 
   @override
-  State<StatefulWidget> createState() => _ReceiveSectionState();
+  State<StatefulWidget> createState() => _AudioRecordingSectionState();
 }
 
-class _ReceiveSectionState extends State<ReceiveSection> {
+class _AudioRecordingSectionState extends State<AudioRecordingSection> {
   final ScrollController _scrollController = ScrollController();
   bool _scrolledBottomBool = true;
 
@@ -74,35 +74,6 @@ class _ReceiveSectionState extends State<ReceiveSection> {
                   ],
                 ),
                 const SizedBox(height: 24),
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    border: Border.all(width: 1.0),
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(
-                      maxHeight: 380,
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(8.0),
-                      child: ValueListenableBuilder<String>(
-                        valueListenable: widget.receiveSectionCubit.consoleNotifier,
-                        builder: (BuildContext context, String logs, _) {
-                          return SingleChildScrollView(
-                            controller: _scrollController,
-                            scrollDirection: Axis.vertical,
-                            child: Text(
-                              logs,
-                              style: const TextStyle(fontSize: 11),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                ),
                 if (state is ReceiveSectionResultState) ...<Widget>[
                   const SizedBox(height: 20),
                   if (state.brokenMessageIndexes.isEmpty && recordingInProgressBool == false)

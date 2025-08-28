@@ -13,6 +13,18 @@ Future<void> main() async {
 
   // Get CBOR Input
   Uint8List payloadBytes = HexCodec.decode(cborInput);
+  print('BYTES');
+  print(const CborCryptoKeypath(
+    components: <CborPathComponent>[
+      CborPathComponent(index: 44, hardened: true),
+      CborPathComponent(index: 60, hardened: true),
+      CborPathComponent(index: 0, hardened: true),
+      CborPathComponent(index: 0, hardened: false),
+      CborPathComponent(index: 0, hardened: false)
+    ],
+    sourceFingerprint: 2539474417,
+  ).toSerializedCbor(includeTagBool: true));
+
   CborCryptoKeypath cborCryptoKeypath = CborCryptoKeypath.fromSerializedCbor(payloadBytes);
 
   // Calculate

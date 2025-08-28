@@ -12,6 +12,8 @@ Future<void> main() async {
 
   // Get CBOR Input
   Uint8List payloadBytes = HexCodec.decode(cborInput);
+  print('BYTES');
+  print(payloadBytes);
   CborEthSignRequest cborEthSignRequest = CborEthSignRequest.fromSerializedCbor(payloadBytes);
 
   // Calculate
