@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,7 +16,6 @@ class ReceiveSectionCubit extends Cubit<AReceiveSectionState> {
   final ValueNotifier<String> consoleNotifier = ValueNotifier<String>('');
   late final AudioDecoder _audioDecoder;
   AudioSettingsModel audioSettingsModel = AudioSettingsModel(frequencyGenerator: StandardFrequencyGenerator(subbandCount: 32));
-  List<int> recordedData = List<int>.empty(growable: true);
 
   ReceiveSectionCubit({
     required this.audioSupervisorCubit,
@@ -29,12 +29,10 @@ class ReceiveSectionCubit extends Cubit<AReceiveSectionState> {
   }
 
   Future<void> startRecording() async {
-    recordedData = List<int>.empty(growable: true);
     try {
       await _audioDecoder.startRecording(audioSettingsModel);
       emit(ReceiveSectionRecordingState(
         recordedData: const <int>[],
-        decodedMessageParts: const <String>[],
         brokenMessageIndexes: const <int>[],
       ));
       audioSupervisorCubit.refresh();
@@ -58,14 +56,12 @@ class ReceiveSectionCubit extends Cubit<AReceiveSectionState> {
 
   void _handleDataFrameReceived(DataFrameModel dataFrameModel) {
     consoleNotifier.value += '\nDataFrameModel (${dataFrameModel.frameIndex}): ${dataFrameModel.data}\n';
-    recordedData.addAll(dataFrameModel.data);
   }
 
   void _handleDecodingCompleted(FrameCollectionModel frameCollectionModel) {
-    List<String> decodedParts = frameCollectionModel.getMessageParts();
+    Uint8List recordedData = frameCollectionModel.getRawDataBytes();
     emit(ReceiveSectionResultState(
       recordedData: recordedData,
-      decodedMessageParts: decodedParts,
       brokenMessageIndexes: frameCollectionModel.getBrokenDataFrameIndexes(),
     ));
     audioSupervisorCubit.refresh();
@@ -74,10 +70,6 @@ class ReceiveSectionCubit extends Cubit<AReceiveSectionState> {
   void _handleDecodingFailed() {
     emit(ReceiveSectionResultState(
       recordedData: const <int>[],
-      decodedMessageParts: const <String>[
-        'TRANSFER FAILED!',
-        '\nPlease reduce the environment noise or use different transfer parameters.',
-      ],
       brokenMessageIndexes: const <int>[],
     ));
     audioSupervisorCubit.refresh();

@@ -51,7 +51,7 @@ dependencies:
   mrumru:
     git:
       url: git@github.com:snggle/mrumru.git
-      ref: dev
+      ref: mj-feature/get-raw-data-bytes
 
 dev_dependencies:
   flutter_test:
