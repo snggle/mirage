@@ -6,11 +6,6 @@ import 'package:mirage/shared/models/pubkey_model.dart';
 class PubkeyService {
   final PubkeyRepository _pubkeyRepository = globalLocator<PubkeyRepository>();
 
-  Future<PubkeyModel> getDerivedPublicKey(int derivationIndex) async {
-    PubkeyModel pubkeyModel = await getPublicKey();
-    return pubkeyModel.derive(derivationIndex);
-  }
-
   Future<PubkeyModel> getPublicKey() async {
     try {
       PubkeyEntity pubkeyEntity = await _pubkeyRepository.get();
