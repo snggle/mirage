@@ -1,9 +1,11 @@
 import 'dart:typed_data';
 
 import 'package:codec_utils/codec_utils.dart';
+import 'package:cryptography_utils/cryptography_utils.dart';
 import 'package:mirage/infra/trezor/api_methods/dto/inbound/get_public_key.dart';
 import 'package:mirage/infra/trezor/api_methods/trezor_inbound_requests/a_trezor_inbound_request.dart';
 import 'package:mirage/infra/trezor/api_methods/trezor_outbound_responses/trezor_public_key_response.dart';
+import 'package:mirage/shared/utils/bytes_utils.dart';
 import 'package:mirage/shared/utils/cbor_utils.dart';
 
 class TrezorPublicKeyRequest extends ATrezorInboundRequest {
@@ -28,12 +30,24 @@ class TrezorPublicKeyRequest extends ATrezorInboundRequest {
     );
   }
 
+  TrezorPublicKeyResponse fromSecp256k1PublicKey(Secp256k1PublicKey secp256k1publicKey) {
+    return TrezorPublicKeyResponse(
+      depth: cborDerivationPath.length,
+      fingerprint: secp256k1publicKey.metadata.parentFingerprint!.toInt(),
+      chainCode: BytesUtils.convertBytesToHex(secp256k1publicKey.metadata.chainCode!),
+      publicKey: BytesUtils.convertBytesToHex(secp256k1publicKey.compressed),
+      xpub: secp256k1publicKey.getExtendedPublicKey(),
+      stringDerivationPath: _stringDerivationPath,
+      numericDerivationPath: _numericDerivationPath,
+    );
+  }
+
   @override
   List<String> get description => <String>[
-    'open Snggle',
-    'click "Connect wallet" button with "Audio interface" selected',
-    'emit audio',
-  ];
+        'open Snggle',
+        'click "Connect wallet" button with "Audio interface" selected',
+        'emit audio',
+      ];
 
   @override
   Uint8List toSerializedCbor() {
