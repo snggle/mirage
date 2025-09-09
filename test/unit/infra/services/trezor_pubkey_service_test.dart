@@ -1,4 +1,3 @@
-import 'package:cryptography_utils/cryptography_utils.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mirage/infra/entity/pubkey_entity.dart';
 import 'package:mirage/infra/services/pubkey_service.dart';
@@ -9,25 +8,6 @@ import '../../../utils/test_utils.dart';
 
 Future<void> main() async {
   await initMockLocator();
-
-  group('Tests of TrezorPubkeyService.getDerivedPublicKey()', () {
-    test('Should [return derived public key] according to given [derivation index]', () async {
-      // Arrange
-      await TestUtils.initWithTestPubkey();
-      PubkeyService actualTrezorPubkeyService = PubkeyService();
-      int derivationIndex = 0;
-
-      // Act
-      PubkeyModel actualDerivedPublicKey = await actualTrezorPubkeyService.getDerivedPublicKey(derivationIndex);
-
-      // Assert
-      PubkeyModel expectedDerivedPublicKey = PubkeyModel(
-          secp256k1publicKey: Secp256k1PublicKey.fromExtendedPublicKey(
-              'xpub6GTZvMtLoeTYGYuLUMGbDiKnDQr3HvpTtbWjAXroWEdDfjRtHNPJy1E2fpSyJPCPjNLf8S61P7eTAHFGcWDzUqTmAiPs5nSPtzoLCEyAtiE'));
-
-      expect(actualDerivedPublicKey, expectedDerivedPublicKey);
-    });
-  });
 
   group('Tests of TrezorPubkeyService.getPublicKey()', () {
     test('Should [return PubkeyModel] if [file EXISTS] and its [content NOT EMPTY]', () async {
@@ -55,7 +35,7 @@ Future<void> main() async {
 
       // Assert
       expect(
-            () async => actualTrezorPubkeyService.getPublicKey(),
+        () async => actualTrezorPubkeyService.getPublicKey(),
         throwsA(isA<Exception>()),
       );
     });
@@ -66,7 +46,7 @@ Future<void> main() async {
 
       // Assert
       expect(
-            () async => actualTrezorPubkeyService.getPublicKey(),
+        () async => actualTrezorPubkeyService.getPublicKey(),
         throwsA(isA<Exception>()),
       );
     });

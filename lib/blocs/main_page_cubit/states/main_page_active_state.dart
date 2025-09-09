@@ -7,22 +7,30 @@ import 'package:mirage/infra/trezor/api_methods/trezor_inbound_requests/trezor_p
 import 'package:mirage/infra/trezor/ws/trezor_ws_event.dart';
 import 'package:mirage/shared/models/pubkey_model.dart';
 
-class MainPageEnabledState extends AMainPageState {
+class MainPageActiveState extends AMainPageState {
   final TrezorWsEvent activeWsEvent;
   final bool repeatedAttemptBool;
+  final PubkeyModel? pubkeyModel;
 
-  const MainPageEnabledState({
+  MainPageActiveState({
     required this.activeWsEvent,
+    required this.pubkeyModel,
     this.repeatedAttemptBool = false,
-    super.pubkeyModel,
   });
 
-  @override
   AMainPageState copyWith({PubkeyModel? pubkeyModel}) {
-    return MainPageEnabledState(
+    return MainPageActiveState(
       activeWsEvent: activeWsEvent,
       pubkeyModel: pubkeyModel,
     );
+  }
+
+  bool isPubkeyRequiredAndMissing() {
+    if (activeWsEvent.trezorInboundRequest is TrezorPublicKeyRequest) {
+      return false;
+    } else {
+      return pubkeyModel == null;
+    }
   }
 
   String get title => activeWsEvent.trezorInboundRequest.title;
