@@ -35,6 +35,10 @@ dependencies:
   # https://pub.dev/packages/win32audio
   win32audio: 1.4.0
 
+  # This plugin allows Flutter desktop apps to resizing and repositioning the window.
+  # https://pub.dev/packages/window_manager
+  window_manager: 0.4.3
+
   # Dart package containing implementation of UR (Uniform Resource) for QR code transfer functionality.
   codec_utils:
     git:

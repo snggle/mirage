@@ -3,20 +3,20 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:mirage/blocs/audio_player_section_cubit/audio_player_section_cubit.dart';
 import 'package:mirage/blocs/audio_recorder_section_cubit/audio_recorder_section_cubit.dart';
-import 'package:mirage/blocs/main_page_cubit/states/main_page_enabled_state.dart';
+import 'package:mirage/blocs/main_page_cubit/states/main_page_active_state.dart';
 import 'package:mirage/infra/trezor/api_methods/trezor_inbound_requests/trezor_public_key_request.dart';
 import 'package:mirage/views/widgets/audio_player_section.dart';
 import 'package:mirage/views/widgets/audio_recorder_section.dart';
 import 'package:mirage/views/widgets/bullet_list_widget.dart';
 
 class DataTransferPage extends StatefulWidget {
-  final MainPageEnabledState mainPageEnabledState;
+  final MainPageActiveState mainPageActiveState;
   final ValueChanged<Uint8List> onSubmitted;
   final Future<bool> Function() isDeviceListEmpty;
   final VoidCallback onCancel;
 
   const DataTransferPage({
-    required this.mainPageEnabledState,
+    required this.mainPageActiveState,
     required this.onSubmitted,
     required this.isDeviceListEmpty,
     required this.onCancel,
@@ -48,15 +48,15 @@ class _DataTransferPageState extends State<DataTransferPage> {
 
   @override
   Widget build(BuildContext context) {
-    List<String>? description = widget.mainPageEnabledState.description;
+    List<String>? description = widget.mainPageActiveState.description;
 
-    if (widget.mainPageEnabledState.activeWsEvent.trezorInboundRequest is TrezorPublicKeyRequest) {
+    if (widget.mainPageActiveState.activeWsEvent.trezorInboundRequest is TrezorPublicKeyRequest) {
       index = 1;
     }
 
     List<Widget> dataTransferWidgets = <Widget>[
       AudioPlayerSection(
-        msgUint8List: widget.mainPageEnabledState.audioRequestData,
+        msgUint8List: widget.mainPageActiveState.audioRequestData,
         audioPlayerSectionCubit: _audioPlayerSectionCubit,
         onProceed: _onProceed,
       ),
@@ -74,7 +74,7 @@ class _DataTransferPageState extends State<DataTransferPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            if (widget.mainPageEnabledState.repeatedAttemptBool) ...<Widget>[
+            if (widget.mainPageActiveState.repeatedAttemptBool) ...<Widget>[
               const Text('Invalid message. Please try again.', style: TextStyle(color: Colors.red)),
               const SizedBox(
                 height: 10,
@@ -83,7 +83,7 @@ class _DataTransferPageState extends State<DataTransferPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Text(widget.mainPageEnabledState.title, style: const TextStyle(fontSize: 20)),
+                Text(widget.mainPageActiveState.title, style: const TextStyle(fontSize: 20)),
                 OutlinedButton(
                   onPressed: widget.onCancel,
                   style: OutlinedButton.styleFrom(
