@@ -73,9 +73,7 @@ class _AudioRecorderSectionState extends State<AudioRecorderSection> {
                 if (state is AudioRecorderSectionResultState) ...<Widget>[
                   const SizedBox(height: 20),
                   ElevatedButton.icon(
-                    onPressed: () {
-                      widget.onSubmitted(Uint8List.fromList(state.recordedData));
-                    },
+                    onPressed: () => _submitRecordedData(Uint8List.fromList(state.recordedData)),
                     label: const Text('Submit'),
                     icon: const Icon(Icons.navigate_next_outlined),
                   ),
@@ -116,5 +114,10 @@ class _AudioRecorderSectionState extends State<AudioRecorderSection> {
         ],
       ),
     );
+  }
+
+  void _submitRecordedData(Uint8List recordedData) {
+    widget.onSubmitted(recordedData);
+    widget.audioRecorderSectionCubit.reset();
   }
 }
