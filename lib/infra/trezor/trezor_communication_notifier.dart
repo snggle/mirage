@@ -10,11 +10,13 @@ import 'package:mirage/infra/trezor/protobuf/trezor_inbound_requests/supplementa
 import 'package:mirage/infra/trezor/protobuf/trezor_outbound_responses/a_trezor_outbound_response.dart';
 import 'package:mirage/infra/trezor/protobuf/trezor_outbound_responses/awaited/a_trezor_awaited_response.dart';
 import 'package:mirage/infra/trezor/trezor_event.dart';
+import 'package:mirage/shared/models/pubkey_model.dart';
 import 'package:protobuf/protobuf.dart' as protobuf;
 
 class TrezorCommunicationNotifier extends ChangeNotifier {
   TrezorEvent? activeEvent;
   ATrezorMultipartInteractiveRequest? incompleteEIP1559SignatureRequest;
+  PubkeyModel? activePubkey;
 
   Future<String> getResponseBuffer(String inputBuffer) async {
     protobuf.GeneratedMessage inputMsg = ProtobufMsgSerializer.deserialize(inputBuffer);
