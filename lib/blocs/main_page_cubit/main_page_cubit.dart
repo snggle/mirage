@@ -7,9 +7,12 @@ import 'package:mirage/blocs/main_page_cubit/states/main_page_enabled_state.dart
 import 'package:mirage/blocs/main_page_cubit/states/main_page_recorded_state.dart';
 import 'package:mirage/config/locator.dart';
 import 'package:mirage/infra/services/pubkey_service.dart';
+import 'package:mirage/infra/trezor/protobuf/trezor_inbound_requests/interactive/a_trezor_interactive_request.dart';
 import 'package:mirage/infra/trezor/protobuf/trezor_inbound_requests/interactive/multipart/trezor_eip1559_signature_request.dart';
 import 'package:mirage/infra/trezor/protobuf/trezor_inbound_requests/interactive/trezor_eth_msg_signature_request.dart';
+import 'package:mirage/infra/trezor/protobuf/trezor_inbound_requests/interactive/trezor_public_key_request.dart';
 import 'package:mirage/infra/trezor/protobuf/trezor_outbound_responses/awaited/a_trezor_awaited_response.dart';
+import 'package:mirage/infra/trezor/protobuf/trezor_outbound_responses/awaited/trezor_public_key_response.dart';
 import 'package:mirage/infra/trezor/trezor_communication_notifier.dart';
 import 'package:mirage/infra/trezor/trezor_event.dart';
 import 'package:mirage/shared/models/pubkey_model.dart';
@@ -35,6 +38,12 @@ class MainPageCubit extends Cubit<AMainPageState> {
 
     try {
       switch (activeEvent.trezorInteractiveRequest) {
+        case TrezorPublicKeyRequest trezorPublicKeyRequest:
+          if (state.pubkeyModel == null) {
+            trezorAwaitedResponse = await trezorPublicKeyRequest.getResponseFromCborPayload(recordedMsgUint8List);
+            await _pubkeyService.saveXPub((trezorAwaitedResponse as TrezorPublicKeyResponse).xpub);
+            await loadPubkey();
+          }
         case TrezorEIP1559SignatureRequest trezorEIP1559SignatureRequest:
           trezorAwaitedResponse = await trezorEIP1559SignatureRequest.getResponseFromCborPayload(recordedMsgUint8List);
         case TrezorEthMsgSignatureRequest trezorEthMsgSignatureRequest:
@@ -92,9 +101,34 @@ class MainPageCubit extends Cubit<AMainPageState> {
   }
 
   Future<void> _resolveInteractiveRequest(TrezorEvent activeEvent) async {
-    if (state.pubkeyModel == null) {
+    ATrezorInteractiveRequest request = activeEvent.trezorInteractiveRequest;
+    if (request is TrezorPublicKeyRequest && request.derivationPath.length == 4) {
+      return _returnPublicKey(activeEvent, request);
+    } else if (request is TrezorPublicKeyRequest && request.derivationPath.length > 4) {
+      return _derivePublicKey(activeEvent, request);
+    } else if (request is TrezorPublicKeyRequest == false && state.pubkeyModel == null) {
       activeEvent.reject('No public key data. Connect the wallet again.');
     } else {
+      await _fetchResponseFromSnggle(activeEvent);
+    }
+  }
+
+  Future<void> _returnPublicKey(TrezorEvent activeEvent, TrezorPublicKeyRequest trezorPublicKeyRequest) async {
+    try {
+      PubkeyModel publicKey = await _pubkeyService.getPublicKey();
+      TrezorPublicKeyResponse derivedPubkeyResponse = trezorPublicKeyRequest.getDerivedResponse(publicKey.secp256k1publicKey);
+      activeEvent.resolve(derivedPubkeyResponse);
+    } catch (e) {
+      await _fetchResponseFromSnggle(activeEvent);
+    }
+  }
+
+  Future<void> _derivePublicKey(TrezorEvent activeEvent, TrezorPublicKeyRequest trezorPublicKeyRequest) async {
+    try {
+      PubkeyModel derivedPubkeyModel = await _pubkeyService.getDerivedPublicKey(trezorPublicKeyRequest.derivationPath.last);
+      TrezorPublicKeyResponse derivedPubkeyResponse = trezorPublicKeyRequest.getDerivedResponse(derivedPubkeyModel.secp256k1publicKey);
+      activeEvent.resolve(derivedPubkeyResponse);
+    } catch (e) {
       await _fetchResponseFromSnggle(activeEvent);
     }
   }
