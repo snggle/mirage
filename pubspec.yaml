@@ -11,6 +11,10 @@ dependencies:
   flutter:
     sdk: flutter
 
+  # Etherum Blockies implementation
+  # https://pub.dev/packages/blockies_svg
+  blockies_svg: 1.0.2
+
   # A Dart package that helps to implement value based equality without needing to explicitly override == and hashCode.
   # https://pub.dev/packages/equatable
   equatable: 2.0.5
@@ -18,6 +22,10 @@ dependencies:
   # Flutter Widgets that make it easy to implement the BLoC (Business Logic Component) design pattern. Built to be used with the bloc state management package.
   # https://pub.dev/packages/flutter_bloc
   flutter_bloc: 8.1.6
+
+  # An SVG rendering and widget library for Flutter, which allows painting and displaying Scalable Vector Graphics 1.1 files.
+  # https://pub.dev/packages/flutter_svg
+  flutter_svg: 2.0.10+1
 
   #  This is a simple Service Locator for Dart and Flutter projects
   #  https://pub.dev/packages/get_it
