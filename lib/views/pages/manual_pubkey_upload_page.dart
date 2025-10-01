@@ -21,7 +21,7 @@ class ManualPubkeyUploadPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      padding: const EdgeInsets.all(30.0),
       child: Column(
         children: <Widget>[
           const SizedBox(height: 20),
