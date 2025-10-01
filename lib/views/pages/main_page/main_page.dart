@@ -35,34 +35,13 @@ class _MainPageState extends State<MainPage> {
         return SingleChildScrollView(
           child: Column(
             children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    if (widget.pubkeyModel != null)
-                      Expanded(
-                        child: Text(
-                          'Active key: ${widget.pubkeyModel!.hex}',
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(color: Colors.grey),
-                        ),
-                      ),
-                    if (mainPageState is MainPageActiveState)
-                      IconButton(
-                        icon: const Icon(Icons.close),
-                        onPressed: widget.mainPageCubit.cancel,
-                      ),
-                  ],
-                ),
-              ),
               Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     if (mainPageState is MainPageIdleState)
                       IdlePage(
-                        pubkeyExistsBool: widget.pubkeyModel != null,
+                        activePubkey: widget.pubkeyModel,
                         onOpenPubkeyUpload: widget.onOpenPubkeyUpload,
                       ),
                     if (mainPageState is MainPageActiveState) ...<Widget>[
