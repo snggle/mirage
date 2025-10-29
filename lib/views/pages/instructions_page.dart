@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mirage/views/pages/tutorial_page.dart';
 
 class InstructionsPage extends StatelessWidget {
   const InstructionsPage({
@@ -35,9 +36,14 @@ class InstructionsPage extends StatelessWidget {
             const SizedBox(height: 10),
             SizedBox(
               width: buttonWidth,
-              child: const OutlinedButton(
-                onPressed: null,
-                child: Text(
+              child: OutlinedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute<void>(builder: (_) => TutorialPage.hardReset()),
+                  );
+                },
+                child: const Text(
                   'Reset MetaMask',
                   style: TextStyle(color: Colors.blue),
                 ),
