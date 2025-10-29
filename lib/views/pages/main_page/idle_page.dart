@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mirage/views/pages/tutorial_page.dart';
 
 class IdlePage extends StatefulWidget {
   final bool pubkeyExistsBool;
@@ -25,7 +26,15 @@ class _IdlePageState extends State<IdlePage> {
             const SizedBox(height: 60),
             const Text('Wallet not connected', style: TextStyle(fontSize: 20)),
             const SizedBox(height: 20),
-            const ElevatedButton(onPressed: null, child: Text('Get started!')),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute<void>(builder: (_) => TutorialPage.walletConnect()),
+                );
+              },
+              child: const Text('Get started!'),
+            ),
             const SizedBox(height: 50),
           ],
           if (widget.pubkeyExistsBool) ...<Widget>[

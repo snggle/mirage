@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mirage/views/pages/tutorial_page.dart';
 
 class ExtraActionsPage extends StatelessWidget {
   final bool pubkeyExistsBool;
@@ -40,9 +41,14 @@ class ExtraActionsPage extends StatelessWidget {
             const SizedBox(height: 10),
             SizedBox(
               width: buttonWidth,
-              child: const OutlinedButton(
-                onPressed: null,
-                child: Text(
+              child: OutlinedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute<void>(builder: (_) => TutorialPage.hardReset()),
+                  );
+                },
+                child: const Text(
                   'Reset MetaMask',
                   style: TextStyle(color: Colors.blue),
                 ),
