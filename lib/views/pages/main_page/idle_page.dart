@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mirage/views/pages/tutorial_page.dart';
 
 class IdlePage extends StatefulWidget {
   final bool pubkeyExistsBool;
@@ -31,25 +32,35 @@ class _IdlePageState extends State<IdlePage> {
             const SizedBox(height: 30),
             const Text('Mirage is waiting for your actions on MetaMask', style: TextStyle(fontSize: 16)),
             const SizedBox(height: 20),
-            const Column(
+            Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 SizedBox(
                   width: 400,
                   child: OutlinedButton(
-                    onPressed: null,
-                    child: Text(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute<void>(builder: (_) => TutorialPage.walletConnect()),
+                      );
+                    },
+                    child: const Text(
                       'Connect to MetaMask or Reset MetaMask',
                       style: TextStyle(color: Colors.blue),
                     ),
                   ),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 SizedBox(
                   width: 400,
                   child: OutlinedButton(
-                    onPressed: null,
-                    child: Text(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute<void>(builder: (_) => TutorialPage.hardReset()),
+                      );
+                    },
+                    child: const Text(
                       'Send Transaction on MetaMask',
                       style: TextStyle(color: Colors.blue),
                     ),

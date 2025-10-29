@@ -31,6 +31,10 @@ dependencies:
   # https://pub.dev/packages/protobuf
   protobuf: 3.1.0
 
+  # A package that provides a set of animated page indicators with a variety of effects.
+  # https://pub.dev/packages/smooth_page_indicator
+  smooth_page_indicator: ^1.1.0
+
   # A library to get Audio Devices on Windows.
   # https://pub.dev/packages/win32audio
   win32audio: 1.4.0
@@ -71,3 +75,30 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+  assets:
+    - assets/wallet_connect_tutorial_images/0.png
+    - assets/wallet_connect_tutorial_images/1.png
+    - assets/wallet_connect_tutorial_images/2.png
+    - assets/wallet_connect_tutorial_images/3.png
+    - assets/wallet_connect_tutorial_images/4.png
+    - assets/wallet_connect_tutorial_images/5.png
+    - assets/wallet_connect_tutorial_images/6.png
+    - assets/wallet_connect_tutorial_images/7.png
+    - assets/wallet_connect_tutorial_images/8.png
+    - assets/wallet_connect_tutorial_images/9.png
+    - assets/wallet_connect_tutorial_images/10.png
+    - assets/wallet_connect_tutorial_images/11.png
+    - assets/wallet_connect_tutorial_images/12.png
+    - assets/wallet_connect_tutorial_images/13.png
+    - assets/wallet_connect_tutorial_images/14.png
+    - assets/wallet_connect_tutorial_images/15.png
+    - assets/hard_reset_tutorial_images/0.png
+    - assets/hard_reset_tutorial_images/1.png
+    - assets/hard_reset_tutorial_images/2.png
+    - assets/hard_reset_tutorial_images/3.png
+    - assets/hard_reset_tutorial_images/4.png
+    - assets/hard_reset_tutorial_images/5.png
+    - assets/hard_reset_tutorial_images/6.png
+    - assets/hard_reset_tutorial_images/7.png
+    - assets/hard_reset_tutorial_images/8.png
