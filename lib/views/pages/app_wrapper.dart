@@ -8,6 +8,7 @@ import 'package:mirage/blocs/main_page_cubit/states/main_page_active_state.dart'
 import 'package:mirage/blocs/pubkey_cubit/a_pubkey_state.dart';
 import 'package:mirage/blocs/pubkey_cubit/pubkey_cubit.dart';
 import 'package:mirage/blocs/pubkey_cubit/states/pubkey_uploading_state.dart';
+import 'package:mirage/communication_visualizer.dart';
 import 'package:mirage/config/locator.dart';
 import 'package:mirage/views/pages/main_page/main_page.dart';
 import 'package:mirage/views/pages/manual_pubkey_upload_page.dart';
@@ -68,18 +69,26 @@ class _AppWrapperState extends State<AppWrapper> {
                 ),
               ],
             ),
-            body: pubkeyState is PubkeyUploadingState
-                ? ManualPubkeyUploadPage(
+            body: Column(
+              children: <Widget>[
+                CommunicationVisualizer(
+                  walletConnectedBool: pubkeyState.pubkeyModel != null,
+                ),
+                if (pubkeyState is PubkeyUploadingState)
+                  ManualPubkeyUploadPage(
                     isDeviceListEmpty: _isDeviceListEmpty,
                     onPubkeyUploaded: _uploadRecordedPubkey,
                     onCancel: _cancelManualPubkeyUpload,
                   )
-                : MainPage(
+                else
+                  MainPage(
                     mainPageCubit: _mainPageCubit,
                     isDeviceListEmpty: _isDeviceListEmpty,
                     pubkeyModel: pubkeyState.pubkeyModel,
                     onOpenPubkeyUpload: _pubkeyCubit.openManualPubkeyUpload,
                   ),
+              ],
+            ),
           ),
         );
       },

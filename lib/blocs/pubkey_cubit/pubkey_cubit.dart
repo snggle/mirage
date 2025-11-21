@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mirage/blocs/pubkey_cubit/a_pubkey_state.dart';
 import 'package:mirage/blocs/pubkey_cubit/states/pubkey_default_state.dart';
 import 'package:mirage/blocs/pubkey_cubit/states/pubkey_uploading_state.dart';
+import 'package:mirage/blocs/visualizer_cubit/visualizer_cubit.dart';
 import 'package:mirage/config/locator.dart';
 import 'package:mirage/infra/services/pubkey_service.dart';
 import 'package:mirage/infra/trezor/api_methods/trezor_outbound_responses/trezor_public_key_response.dart';
@@ -15,9 +16,15 @@ class PubkeyCubit extends Cubit<APubkeyState> {
 
   PubkeyCubit() : super(const PubkeyDefaultState());
 
-  void openManualPubkeyUpload() => emit(PubkeyUploadingState(pubkeyModel: state.pubkeyModel));
+  void openManualPubkeyUpload() {
+    globalLocator<VisualizerCubit>().switchToRecording();
+    emit(PubkeyUploadingState(pubkeyModel: state.pubkeyModel));
+  }
 
-  void closeManualPubkeyUpload() => emit(PubkeyDefaultState(pubkeyModel: state.pubkeyModel));
+  void closeManualPubkeyUpload() {
+    globalLocator<VisualizerCubit>().switchToInitial();
+    emit(PubkeyDefaultState(pubkeyModel: state.pubkeyModel));
+  }
 
   Future<void> uploadPubkey(Uint8List recordedPubkeyCborBytes) async {
     TrezorPublicKeyResponse trezorPublicKeyResponse = TrezorPublicKeyResponse.fromSerializedCbor(

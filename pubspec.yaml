@@ -85,28 +85,7 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/wallet_connect_tutorial_images/0.png
-    - assets/wallet_connect_tutorial_images/1.png
-    - assets/wallet_connect_tutorial_images/2.png
-    - assets/wallet_connect_tutorial_images/3.png
-    - assets/wallet_connect_tutorial_images/4.png
-    - assets/wallet_connect_tutorial_images/5.png
-    - assets/wallet_connect_tutorial_images/6.png
-    - assets/wallet_connect_tutorial_images/7.png
-    - assets/wallet_connect_tutorial_images/8.png
-    - assets/wallet_connect_tutorial_images/9.png
-    - assets/wallet_connect_tutorial_images/10.png
-    - assets/wallet_connect_tutorial_images/11.png
-    - assets/wallet_connect_tutorial_images/12.png
-    - assets/wallet_connect_tutorial_images/13.png
-    - assets/wallet_connect_tutorial_images/14.png
-    - assets/wallet_connect_tutorial_images/15.png
-    - assets/hard_reset_tutorial_images/0.png
-    - assets/hard_reset_tutorial_images/1.png
-    - assets/hard_reset_tutorial_images/2.png
-    - assets/hard_reset_tutorial_images/3.png
-    - assets/hard_reset_tutorial_images/4.png
-    - assets/hard_reset_tutorial_images/5.png
-    - assets/hard_reset_tutorial_images/6.png
-    - assets/hard_reset_tutorial_images/7.png
-    - assets/hard_reset_tutorial_images/8.png
+    - assets/wallet_connect_tutorial_images/
+    - assets/hard_reset_tutorial_images/
+    - assets/visualizer/
+

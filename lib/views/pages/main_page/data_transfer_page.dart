@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:mirage/blocs/audio_player_section_cubit/audio_player_section_cubit.dart';
 import 'package:mirage/blocs/audio_recorder_section_cubit/audio_recorder_section_cubit.dart';
 import 'package:mirage/blocs/main_page_cubit/states/main_page_active_state.dart';
+import 'package:mirage/blocs/visualizer_cubit/visualizer_cubit.dart';
+import 'package:mirage/config/locator.dart';
 import 'package:mirage/infra/trezor/api_methods/trezor_inbound_requests/trezor_public_key_request.dart';
 import 'package:mirage/views/widgets/audio_player_section.dart';
 import 'package:mirage/views/widgets/audio_recorder_section.dart';
@@ -36,7 +38,9 @@ class _DataTransferPageState extends State<DataTransferPage> {
   void initState() {
     super.initState();
     _audioPlayerSectionCubit = AudioPlayerSectionCubit();
-    _audioRecorderSectionCubit = AudioRecorderSectionCubit();
+    _audioRecorderSectionCubit = AudioRecorderSectionCubit(
+      onRecorded: () => globalLocator<VisualizerCubit>().switchToDataReady(),
+    );
   }
 
   @override
@@ -52,6 +56,10 @@ class _DataTransferPageState extends State<DataTransferPage> {
 
     if (widget.mainPageActiveState.activeWsEvent.trezorInboundRequest is TrezorPublicKeyRequest) {
       index = 1;
+    }
+
+    if (index == 0) {
+      globalLocator<VisualizerCubit>().switchToReadyEmit();
     }
 
     List<Widget> dataTransferWidgets = <Widget>[
