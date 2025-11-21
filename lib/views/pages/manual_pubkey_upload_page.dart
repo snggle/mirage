@@ -2,6 +2,8 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:mirage/blocs/audio_recorder_section_cubit/audio_recorder_section_cubit.dart';
+import 'package:mirage/blocs/visualizer_cubit/visualizer_cubit.dart';
+import 'package:mirage/config/locator.dart';
 import 'package:mirage/views/widgets/audio_recorder_section.dart';
 import 'package:mirage/views/widgets/bullet_list_widget.dart';
 
@@ -9,7 +11,9 @@ class ManualPubkeyUploadPage extends StatelessWidget {
   final Future<bool> Function() isDeviceListEmpty;
   final ValueChanged<Uint8List> onPubkeyUploaded;
   final VoidCallback onCancel;
-  final AudioRecorderSectionCubit audioRecorderSectionCubit = AudioRecorderSectionCubit();
+  final AudioRecorderSectionCubit audioRecorderSectionCubit = AudioRecorderSectionCubit(
+    onRecorded: () => globalLocator<VisualizerCubit>().switchToNoConnections(),
+  );
 
   ManualPubkeyUploadPage({
     required this.isDeviceListEmpty,

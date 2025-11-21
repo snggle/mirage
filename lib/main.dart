@@ -16,11 +16,11 @@ Future<void> main() async {
     if (Platform.isWindows) {
       await windowManager.ensureInitialized();
       WindowOptions windowOptions = const WindowOptions(
-        size: Size(700, 600),
+        size: Size(700, 700),
         backgroundColor: Colors.transparent,
         skipTaskbar: false,
         titleBarStyle: TitleBarStyle.normal,
-        minimumSize: Size(600, 500),
+        minimumSize: Size(700, 700),
         maximumSize: Size(800, 700),
       );
       await windowManager.waitUntilReadyToShow(windowOptions, () async {

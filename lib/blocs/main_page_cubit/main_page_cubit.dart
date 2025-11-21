@@ -5,6 +5,7 @@ import 'package:mirage/blocs/main_page_cubit/a_main_page_state.dart';
 import 'package:mirage/blocs/main_page_cubit/states/main_page_active_state.dart';
 import 'package:mirage/blocs/main_page_cubit/states/main_page_idle_state.dart';
 import 'package:mirage/blocs/pubkey_cubit/pubkey_cubit.dart';
+import 'package:mirage/blocs/visualizer_cubit/visualizer_cubit.dart';
 import 'package:mirage/config/locator.dart';
 import 'package:mirage/infra/trezor/api_methods/trezor_inbound_requests/a_trezor_inbound_request.dart';
 import 'package:mirage/infra/trezor/api_methods/trezor_inbound_requests/trezor_eip1559_signature_request.dart';
@@ -73,6 +74,7 @@ class MainPageCubit extends Cubit<AMainPageState> {
     TrezorWsEvent? activeEvent = _trezorCommunicationNotifier.activeEvent;
 
     if (activeEvent == null) {
+      globalLocator<VisualizerCubit>().switchToInitial();
       emit(MainPageIdleState());
     } else {
       await _handleInteractiveRequest(activeEvent);

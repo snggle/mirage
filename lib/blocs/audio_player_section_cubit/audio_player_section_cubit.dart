@@ -6,6 +6,8 @@ import 'package:mirage/blocs/audio_player_section_cubit/a_audio_player_section_s
 import 'package:mirage/blocs/audio_player_section_cubit/states/audio_player_section_emitted_state.dart';
 import 'package:mirage/blocs/audio_player_section_cubit/states/audio_player_section_emitting_state.dart';
 import 'package:mirage/blocs/audio_player_section_cubit/states/audio_player_section_empty_state.dart';
+import 'package:mirage/blocs/visualizer_cubit/visualizer_cubit.dart';
+import 'package:mirage/config/locator.dart';
 import 'package:mrumru/mrumru.dart';
 
 class AudioPlayerSectionCubit extends Cubit<AAudioPlayerSectionState> {
@@ -31,6 +33,7 @@ class AudioPlayerSectionCubit extends Cubit<AAudioPlayerSectionState> {
       audioSinkArgs: StreamAudioSinkArgs(),
     ));
     emit(AudioPlayerSectionEmittingState());
+    globalLocator<VisualizerCubit>().switchToEmitting();
   }
 
   void stopSound() {
@@ -43,6 +46,7 @@ class AudioPlayerSectionCubit extends Cubit<AAudioPlayerSectionState> {
       return;
     }
 
+    globalLocator<VisualizerCubit>().switchToReadyEmit();
     if (_cancelledByUserBool) {
       emit(AudioPlayerSectionEmptyState());
     } else {
