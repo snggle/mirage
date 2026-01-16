@@ -37,6 +37,19 @@ class BytesUtils {
     return bytes;
   }
 
+  static Uint8List convertHexToBytes(String hex) {
+    final String normalized = hex.startsWith('0x') ? hex.substring(2) : hex;
+    final String padded = normalized.length.isOdd ? '0$normalized' : normalized;
+
+    final Uint8List bytes = Uint8List(padded.length ~/ 2);
+    for (int i = 0; i < padded.length; i += 2) {
+      bytes[i ~/ 2] = int.parse(padded.substring(i, i + 2), radix: 16);
+    }
+    return bytes;
+  }
+
+  static String convertBytesToHex(Uint8List bytes) => bytes.map((int b) => b.toRadixString(16).padLeft(2, '0')).join();
+
   static List<int> generateRandomBytes(int count) {
     Random random = Random();
     List<int> randomIntegers = List<int>.generate(count, (_) => random.nextInt(256));

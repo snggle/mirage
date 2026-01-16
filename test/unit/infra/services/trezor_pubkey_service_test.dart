@@ -4,8 +4,8 @@ import 'package:mirage/infra/entity/pubkey_entity.dart';
 import 'package:mirage/infra/services/pubkey_service.dart';
 import 'package:mirage/shared/models/pubkey_model.dart';
 
-import '../../../../mocks/mock_locator.dart';
-import '../../../../utils/test_utils.dart';
+import '../../../mocks/mock_locator.dart';
+import '../../../utils/test_utils.dart';
 
 Future<void> main() async {
   await initMockLocator();

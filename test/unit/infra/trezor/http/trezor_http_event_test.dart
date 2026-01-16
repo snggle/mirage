@@ -1,15 +1,15 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mirage/infra/trezor/http/trezor_http_event.dart';
 import 'package:mirage/infra/trezor/protobuf/trezor_inbound_requests/interactive/trezor_public_key_request.dart';
 import 'package:mirage/infra/trezor/protobuf/trezor_outbound_responses/awaited/a_trezor_awaited_response.dart';
 import 'package:mirage/infra/trezor/protobuf/trezor_outbound_responses/awaited/trezor_public_key_response.dart';
-import 'package:mirage/infra/trezor/trezor_event.dart';
 
 // ignore_for_file: cascade_invocations
 void main() {
-  group('Tests of TrezorEvent.resolve() method', () {
+  group('Tests of TrezorHttpEvent.resolve() method', () {
     test('Should [return ATrezorInteractiveRequest]', () async {
       // Arrange
-      TrezorEvent actualTrezorEvent = TrezorEvent(
+      TrezorHttpEvent actualTrezorHttpEvent = TrezorHttpEvent(
         TrezorPublicKeyRequest(
           derivationPath: const <int>[2147483692, 2147483708, 2147483648, 0, 0],
         ),
@@ -26,8 +26,8 @@ void main() {
       );
 
       // Act
-      actualTrezorEvent.resolve(actualTrezorPublicKeyResponse);
-      ATrezorAwaitedResponse actualTrezorAwaitedResponse = await actualTrezorEvent.future;
+      actualTrezorHttpEvent.resolve(actualTrezorPublicKeyResponse);
+      ATrezorAwaitedResponse actualTrezorAwaitedResponse = await actualTrezorHttpEvent.future;
 
       // Assert
       ATrezorAwaitedResponse expectedTrezorAwaitedResponse = TrezorPublicKeyResponse(
@@ -44,21 +44,21 @@ void main() {
     });
   });
 
-  group('Tests of TrezorEvent.resolve() method', () {
+  group('Tests of TrezorHttpEvent.resolve() method', () {
     test('Should [return ATrezorInteractiveRequest]', () async {
       // Arrange
-      TrezorEvent actualTrezorEvent = TrezorEvent(
+      TrezorHttpEvent actualTrezorHttpEvent = TrezorHttpEvent(
         TrezorPublicKeyRequest(
           derivationPath: const <int>[2147483692, 2147483708, 2147483648, 0, 0],
         ),
       );
 
       // Act
-      actualTrezorEvent.reject('Operation canceled');
+      actualTrezorHttpEvent.reject('Operation canceled');
 
       // Assert
       expect(
-        () async => actualTrezorEvent.future,
+        () async => actualTrezorHttpEvent.future,
         throwsA(anything),
       );
     });

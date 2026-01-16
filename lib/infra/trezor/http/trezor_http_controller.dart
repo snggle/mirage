@@ -3,18 +3,18 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:mirage/config/locator.dart';
-import 'package:mirage/infra/trezor/dto/acquire_resp.dart';
-import 'package:mirage/infra/trezor/dto/call_resp.dart';
-import 'package:mirage/infra/trezor/dto/empty_path_resp.dart';
-import 'package:mirage/infra/trezor/dto/enumerate_resp.dart';
-import 'package:mirage/infra/trezor/dto/i_trezor_resp.dart';
-import 'package:mirage/infra/trezor/dto/listen_resp.dart';
-import 'package:mirage/infra/trezor/dto/release_resp.dart';
-import 'package:mirage/infra/trezor/trezor_communication_notifier.dart';
+import 'package:mirage/infra/trezor/http/dto/acquire_resp.dart';
+import 'package:mirage/infra/trezor/http/dto/call_resp.dart';
+import 'package:mirage/infra/trezor/http/dto/empty_path_resp.dart';
+import 'package:mirage/infra/trezor/http/dto/enumerate_resp.dart';
+import 'package:mirage/infra/trezor/http/dto/i_trezor_resp.dart';
+import 'package:mirage/infra/trezor/http/dto/listen_resp.dart';
+import 'package:mirage/infra/trezor/http/dto/release_resp.dart';
+import 'package:mirage/infra/trezor/protobuf/trezor_pb_communication_notifier.dart';
 import 'package:mirage/shared/utils/app_logger.dart';
 
 class TrezorHttpController {
-  final TrezorCommunicationNotifier _trezorCommunicationNotifier = globalLocator<TrezorCommunicationNotifier>();
+  final TrezorPbCommunicationNotifier _trezorCommunicationNotifier = globalLocator<TrezorPbCommunicationNotifier>();
   Completer<void>? listenRequestCompleter;
   String? activeSession;
 

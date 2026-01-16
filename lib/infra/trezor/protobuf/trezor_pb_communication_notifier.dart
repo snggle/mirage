@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
+import 'package:mirage/infra/trezor/http/trezor_http_event.dart';
 import 'package:mirage/infra/trezor/protobuf/protobuf_msg_serializer.dart';
 import 'package:mirage/infra/trezor/protobuf/trezor_inbound_requests/a_trezor_inbound_request.dart';
 import 'package:mirage/infra/trezor/protobuf/trezor_inbound_requests/automated/a_trezor_automated_request.dart';
@@ -9,11 +10,10 @@ import 'package:mirage/infra/trezor/protobuf/trezor_inbound_requests/interactive
 import 'package:mirage/infra/trezor/protobuf/trezor_inbound_requests/supplementary/a_trezor_supplementary_request.dart';
 import 'package:mirage/infra/trezor/protobuf/trezor_outbound_responses/a_trezor_outbound_response.dart';
 import 'package:mirage/infra/trezor/protobuf/trezor_outbound_responses/awaited/a_trezor_awaited_response.dart';
-import 'package:mirage/infra/trezor/trezor_event.dart';
 import 'package:protobuf/protobuf.dart' as protobuf;
 
-class TrezorCommunicationNotifier extends ChangeNotifier {
-  TrezorEvent? activeEvent;
+class TrezorPbCommunicationNotifier extends ChangeNotifier {
+  TrezorHttpEvent? activeEvent;
   ATrezorMultipartInteractiveRequest? incompleteEIP1559SignatureRequest;
 
   Future<String> getResponseBuffer(String inputBuffer) async {
@@ -58,7 +58,7 @@ class TrezorCommunicationNotifier extends ChangeNotifier {
   }
 
   Future<ATrezorAwaitedResponse> _handleInteractiveRequest(ATrezorInteractiveRequest trezorInteractiveRequest) async {
-    ATrezorAwaitedResponse trezorAwaitedResponse = await _processEvent(TrezorEvent(trezorInteractiveRequest));
+    ATrezorAwaitedResponse trezorAwaitedResponse = await _processEvent(TrezorHttpEvent(trezorInteractiveRequest));
 
     return trezorAwaitedResponse;
   }
@@ -74,7 +74,7 @@ class TrezorCommunicationNotifier extends ChangeNotifier {
     }
   }
 
-  Future<ATrezorAwaitedResponse> _processEvent(TrezorEvent event) async {
+  Future<ATrezorAwaitedResponse> _processEvent(TrezorHttpEvent event) async {
     activeEvent?.reject('Event overwritten');
     activeEvent = event;
     notifyListeners();

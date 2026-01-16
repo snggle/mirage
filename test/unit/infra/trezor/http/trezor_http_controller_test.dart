@@ -3,9 +3,9 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mirage/config/locator.dart';
-import 'package:mirage/infra/trezor/trezor_http_server.dart';
+import 'package:mirage/infra/trezor/http/trezor_http_server.dart';
 
-import '../../../utils/test_utils.dart';
+import '../../../../utils/test_utils.dart';
 
 void main() async {
   const String actualServerUri = 'http://127.0.0.1:21325';

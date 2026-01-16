@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-import 'package:mirage/infra/trezor/dto/i_trezor_resp.dart';
+import 'package:mirage/infra/trezor/http/dto/i_trezor_resp.dart';
 
-class EnumerateResp implements ITrezorResp {
+class ListenResp implements ITrezorResp {
   final String path;
   final int vendor;
   final int product;
@@ -10,7 +10,7 @@ class EnumerateResp implements ITrezorResp {
   final String? session;
   final String? debugSession;
 
-  EnumerateResp({
+  ListenResp({
     this.path = '1',
     this.vendor = 1,
     this.product = 0,
@@ -29,6 +29,5 @@ class EnumerateResp implements ITrezorResp {
       'session': session,
       'debugSession': debugSession,
     };
-    return jsonEncode(<Map<String, dynamic>>[respData]);
-  }
+    return jsonEncode(<Map<String, dynamic>>[respData]);  }
 }

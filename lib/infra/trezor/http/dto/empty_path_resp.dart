@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:mirage/infra/trezor/dto/i_trezor_resp.dart';
+import 'package:mirage/infra/trezor/http/dto/i_trezor_resp.dart';
 
 class EmptyPathResp implements ITrezorResp {
   final String version;

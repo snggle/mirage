@@ -1,4 +1,4 @@
-import 'package:mirage/infra/trezor/dto/i_trezor_resp.dart';
+import 'package:mirage/infra/trezor/http/dto/i_trezor_resp.dart';
 
 class CallResp implements ITrezorResp {
   final String buffer;

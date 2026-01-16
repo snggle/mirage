@@ -2,11 +2,11 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mirage/config/locator.dart';
 import 'package:mirage/infra/trezor/protobuf/messages_compiled/messages-ethereum.pb.dart';
 import 'package:mirage/infra/trezor/protobuf/protobuf_msg_serializer.dart';
-import 'package:mirage/infra/trezor/trezor_communication_notifier.dart';
+import 'package:mirage/infra/trezor/protobuf/trezor_pb_communication_notifier.dart';
 
 void main() {
   initLocator();
-  TrezorCommunicationNotifier actualTrezorCommunicationNotifier = globalLocator<TrezorCommunicationNotifier>();
+  TrezorPbCommunicationNotifier actualTrezorCommunicationNotifier = globalLocator<TrezorPbCommunicationNotifier>();
 
   group('Tests of ProtobufController.getResponseBuffer()', () {
     test('Should [return Features buffer] with [FILLED sessionId], if input starts with 0000 and [sessionId EXISTS] (Initialize -> Features)', () async {

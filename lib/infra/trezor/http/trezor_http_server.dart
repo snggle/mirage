@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:mirage/infra/trezor/trezor_http_controller.dart';
+import 'package:mirage/infra/trezor/http/trezor_http_controller.dart';
 import 'package:mirage/shared/utils/app_logger.dart';
 
 class TrezorHttpServer {
