@@ -4,16 +4,113 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mirage/shared/utils/bytes_utils.dart';
 
 void main() {
-  group('Tests of BytesUtils.convertBytesToBigInt()', () {
-    test('Should [return BigInt] calculated from List<int>', () {
+  group('Tests of BytesUtils.convertBytesToInt()', () {
+    test('Should [return int] calculated from [Big Endian] BYTES', () {
       // Arrange
-      List<int> actualInputList = <int>[5, 10, 15];
+      Uint8List actualBytesInput = Uint8List.fromList(<int>[0, 19]);
 
       // Act
-      BigInt actualBigInt = BytesUtils.convertBytesToBigInt(actualInputList);
+      int actualInt = BytesUtils.convertBytesToInt(actualBytesInput, endian: Endian.big);
 
       // Assert
-      BigInt expectedBigInt = BigInt.from(330255);
+      int expectedInt = 19;
+
+      expect(actualInt, expectedInt);
+    });
+
+    test('Should [return int] calculated from [Little Endian] BYTES', () {
+      // Arrange
+      Uint8List actualBytesInput = Uint8List.fromList(<int>[0, 19]);
+
+      // Act
+      int actualInt = BytesUtils.convertBytesToInt(actualBytesInput, endian: Endian.little);
+
+      // Assert
+      int expectedInt = 4864; // 0x1300
+
+      expect(actualInt, expectedInt);
+    });
+  });
+
+  group('Tests of BytesUtils.convertBytesToBigInt()', () {
+    test('Should [return BigInt] calculated from [Big Endian] BYTES', () {
+      // Arrange
+      Uint8List actualBytesInput = Uint8List.fromList(<int>[5, 10, 15]);
+
+      // Act
+      BigInt actualBigInt = BytesUtils.convertBytesToBigInt(actualBytesInput, endian: Endian.big);
+
+      // Assert
+      BigInt expectedBigInt = BigInt.from(330255); // 0x050A0F
+
+      expect(actualBigInt, expectedBigInt);
+    });
+
+    test('Should [return BigInt] calculated from [Little Endian] BYTES', () {
+      // Arrange
+      Uint8List actualBytesInput = Uint8List.fromList(<int>[5, 10, 15]);
+
+      // Act
+      BigInt actualBigInt = BytesUtils.convertBytesToBigInt(actualBytesInput, endian: Endian.little);
+
+      // Assert
+      BigInt expectedBigInt = BigInt.from(985605); // 0x0F0A05
+
+      expect(actualBigInt, expectedBigInt);
+    });
+  });
+
+  group('Tests of BytesUtils.convertHexToBytes()', () {
+    test('Should [return bytes] calculated from HEX', () {
+      // Arrange
+      String actualHexInput = '1a2b3c';
+
+      // Act
+      Uint8List actualBytes = BytesUtils.convertHexToBytes(actualHexInput);
+
+      // Assert
+      Uint8List expectedBytes = Uint8List.fromList(<int>[26, 43, 60]);
+
+      expect(actualBytes, expectedBytes);
+    });
+
+    test('Should [return bytes] calculated from HEX with 0x prefix', () {
+      // Arrange
+      String actualHexInput = '0x1a2b3c';
+
+      // Act
+      Uint8List actualBytes = BytesUtils.convertHexToBytes(actualHexInput);
+
+      // Assert
+      Uint8List expectedBytes = Uint8List.fromList(<int>[26, 43, 60]);
+
+      expect(actualBytes, expectedBytes);
+    });
+  });
+
+  group('Tests of BytesUtils.convertHexToBigInt()', () {
+    test('Should [return BigInt] calculated from HEX', () {
+      // Arrange
+      String actualHexInput = '1a2b3c';
+
+      // Act
+      BigInt actualBigInt = BytesUtils.convertHexToBigInt(actualHexInput);
+
+      // Assert
+      BigInt expectedBigInt = BigInt.from(1715004);
+
+      expect(actualBigInt, expectedBigInt);
+    });
+
+    test('Should [return BigInt] calculated from HEX with 0x prefix', () {
+      // Arrange
+      String actualHexInput = '0x1a2b3c';
+
+      // Act
+      BigInt actualBigInt = BytesUtils.convertHexToBigInt(actualHexInput);
+
+      // Assert
+      BigInt expectedBigInt = BigInt.from(1715004);
 
       expect(actualBigInt, expectedBigInt);
     });
@@ -32,31 +129,16 @@ void main() {
 
       expect(actualInt, expectedInt);
     });
-  });
 
-  group('Tests of BytesUtils.convertBytesToInt()', () {
-    test('Should [return int] calculated from Big Endian BYTES', () {
+    test('Should [return int] calculated from HEX (Little Endian)', () {
       // Arrange
-      Uint8List actualBytesInput = Uint8List.fromList(<int>[0, 19]);
+      String actualHexInput = '1a2b3c';
 
       // Act
-      int actualInt = BytesUtils.convertBytesToInt(actualBytesInput, endian: Endian.big);
+      int actualInt = BytesUtils.convertHexToInt(actualHexInput, endian: Endian.little);
 
       // Assert
-      int expectedInt = 19;
-
-      expect(actualInt, expectedInt);
-    });
-
-    test('Should [return int] calculated from Little Endian BYTES', () {
-      // Arrange
-      Uint8List actualBytesInput = Uint8List.fromList(<int>[0, 19]);
-
-      // Act
-      int actualInt = BytesUtils.convertBytesToInt(actualBytesInput, endian: Endian.little);
-
-      // Assert
-      int expectedInt = 4864;
+      int expectedInt = 3943194; // 0x3C2B1A
 
       expect(actualInt, expectedInt);
     });
@@ -89,6 +171,21 @@ void main() {
       Uint8List expectedBytes = Uint8List.fromList(<int>[0, 0, 1, 196]);
 
       expect(actualBytes, expectedBytes);
+    });
+  });
+
+  group('Tests of BytesUtils.convertBytesToHex()', () {
+    test('Should [return hex] calculated from bytes', () {
+      // Arrange
+      Uint8List actualBytesInput = Uint8List.fromList(<int>[26, 43, 60]);
+
+      // Act
+      String actualHex = BytesUtils.convertBytesToHex(actualBytesInput);
+
+      // Assert
+      String expectedHex = '1a2b3c';
+
+      expect(actualHex, expectedHex);
     });
   });
 
@@ -129,7 +226,7 @@ void main() {
       Uint8List actualBytesB = Uint8List.fromList(<int>[5, 6, 7, 8]);
       Uint8List actualBytesC = Uint8List.fromList(<int>[9, 10, 11, 12]);
 
-      List<Uint8List> actualBytesToMerge = <Uint8List>[actualBytesA, actualBytesB, actualBytesC];
+      List<List<int>> actualBytesToMerge = <List<int>>[actualBytesA, actualBytesB, actualBytesC];
 
       // Act
       Uint8List actualMergedBytes = BytesUtils.mergeBytes(actualBytesToMerge);

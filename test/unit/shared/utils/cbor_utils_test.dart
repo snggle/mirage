@@ -53,4 +53,24 @@ void main() {
       expect(actualCborPathComponents, expectedCborPathComponents);
     });
   });
+
+  group('Tests of CborUtils.pathToCbor()', () {
+    test('Should [return List<CborPathComponent>] according to given String derivation path', () {
+      // Arrange
+      String stringDerivationPath = "m/44'/60'/0'/0";
+
+      // Act
+      List<CborPathComponent> actualCborPathComponents = CborUtils.pathToCbor(stringDerivationPath);
+
+      // Assert
+      List<CborPathComponent> expectedCborPathComponents = <CborPathComponent>[
+        const CborPathComponent(index: 44, hardened: true),
+        const CborPathComponent(index: 60, hardened: true),
+        const CborPathComponent(index: 0, hardened: true),
+        const CborPathComponent(index: 0, hardened: false),
+      ];
+
+      expect(actualCborPathComponents, expectedCborPathComponents);
+    });
+  });
 }
