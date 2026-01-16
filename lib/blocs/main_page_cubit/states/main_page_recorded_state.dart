@@ -1,8 +1,8 @@
 import 'package:mirage/blocs/main_page_cubit/states/main_page_enabled_state.dart';
-import 'package:mirage/infra/trezor/protobuf/trezor_outbound_responses/awaited/a_trezor_awaited_response.dart';
+import 'package:mirage/infra/trezor/api_methods/trezor_outbound_responses/a_trezor_outbound_response.dart';
 
 class MainPageRecordedState extends MainPageEnabledState {
-  final ATrezorAwaitedResponse? trezorResponse;
+  final ATrezorOutboundResponse? trezorResponse;
 
   const MainPageRecordedState({
     required this.trezorResponse,
