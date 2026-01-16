@@ -1,13 +1,13 @@
 import 'package:codec_utils/codec_utils.dart';
 import 'package:mirage/blocs/main_page_cubit/a_main_page_state.dart';
-import 'package:mirage/infra/trezor/protobuf/trezor_inbound_requests/interactive/multipart/trezor_eip1559_signature_request.dart';
-import 'package:mirage/infra/trezor/protobuf/trezor_inbound_requests/interactive/trezor_eth_msg_signature_request.dart';
-import 'package:mirage/infra/trezor/protobuf/trezor_inbound_requests/interactive/trezor_public_key_request.dart';
-import 'package:mirage/infra/trezor/trezor_event.dart';
+import 'package:mirage/infra/trezor/api_methods/trezor_inbound_requests/trezor_eip1559_signature_request.dart';
+import 'package:mirage/infra/trezor/api_methods/trezor_inbound_requests/trezor_eth_msg_signature_request.dart';
+import 'package:mirage/infra/trezor/api_methods/trezor_inbound_requests/trezor_public_key_request.dart';
+import 'package:mirage/infra/trezor/ws/trezor_ws_event.dart';
 import 'package:mirage/shared/models/pubkey_model.dart';
 
 class MainPageEnabledState extends AMainPageState {
-  final TrezorEvent activeEvent;
+  final TrezorWsEvent activeEvent;
   final bool repeatedAttemptBool;
 
   const MainPageEnabledState({
@@ -24,12 +24,12 @@ class MainPageEnabledState extends AMainPageState {
     );
   }
 
-  String get title => activeEvent.trezorInteractiveRequest.title;
+  String get title => activeEvent.trezorInboundRequest.title;
 
-  List<String> get description => activeEvent.trezorInteractiveRequest.description;
+  List<String> get description => activeEvent.trezorInboundRequest.description;
 
   String get audioRequestData {
-    switch (activeEvent.trezorInteractiveRequest) {
+    switch (activeEvent.trezorInboundRequest) {
       case TrezorPublicKeyRequest trezorPublicKeyRequest:
         return HexCodec.encode(trezorPublicKeyRequest.toSerializedCbor());
       case TrezorEIP1559SignatureRequest trezorEIP1559SignatureRequest:
@@ -37,7 +37,7 @@ class MainPageEnabledState extends AMainPageState {
       case TrezorEthMsgSignatureRequest trezorEthMsgSignatureRequest:
         return HexCodec.encode(trezorEthMsgSignatureRequest.toSerializedCbor(pubkeyModel: pubkeyModel));
       default:
-        return HexCodec.encode(activeEvent.trezorInteractiveRequest.toSerializedCbor());
+        return HexCodec.encode(activeEvent.trezorInboundRequest.toSerializedCbor());
     }
   }
 
