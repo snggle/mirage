@@ -44,9 +44,7 @@ class _AudioPlayerSectionState extends State<AudioPlayerSection> {
                         child: OutlinedButton(
                           onPressed: (emittingInProgressBool || widget.sectionBlockedBool)
                               ? null
-                              : () {
-                                  widget.audioPlayerSectionCubit.playSound(widget.msgUint8List);
-                                },
+                              : () => widget.audioPlayerSectionCubit.playSound(widget.msgUint8List),
                           child: const Text('Emit audio', style: TextStyle(color: Colors.blue)),
                         ),
                       ),
@@ -64,6 +62,7 @@ class _AudioPlayerSectionState extends State<AudioPlayerSection> {
                     const SizedBox(height: 24),
                   ],
                 ),
+                const SizedBox(height: 20),
               ],
             ),
           );

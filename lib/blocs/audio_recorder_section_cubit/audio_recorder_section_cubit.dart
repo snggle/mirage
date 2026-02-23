@@ -8,23 +8,20 @@ import 'package:mirage/blocs/audio_recorder_section_cubit/states/audio_recorder_
 import 'package:mirage/blocs/audio_recorder_section_cubit/states/audio_recorder_section_missing_data_state.dart';
 import 'package:mirage/blocs/audio_recorder_section_cubit/states/audio_recorder_section_recording_state.dart';
 import 'package:mirage/blocs/audio_recorder_section_cubit/states/audio_recorder_section_result_state.dart';
-import 'package:mirage/blocs/audio_supervisor_cubit/audio_supervisor_cubit.dart';
 import 'package:mirage/shared/utils/app_logger.dart';
 import 'package:mrumru/mrumru.dart';
 
 class AudioRecorderSectionCubit extends Cubit<AAudioRecorderSectionState> {
-  final AudioSupervisorCubit? audioSupervisorCubit;
   late final AudioDecoder _audioDecoder;
   final ValueNotifier<double> progressNotifier = ValueNotifier<double>(0);
   AudioSettingsModel audioSettingsModel = AudioSettingsModel(
     frequencyGenerator: StandardFrequencyGenerator(subbandCount: 32),
   );
+  final VoidCallback onRecorded;
 
   int? _allFramesCount;
 
-  AudioRecorderSectionCubit({
-    this.audioSupervisorCubit,
-  }) : super(AudioRecorderSectionEmptyState()) {
+  AudioRecorderSectionCubit({required this.onRecorded}) : super(AudioRecorderSectionEmptyState()) {
     _audioDecoder = AudioDecoder(
       onMetadataFrameReceived: _handleMetadataFrameReceived,
       onDataFrameReceived: _handleDataFrameReceived,
@@ -38,19 +35,16 @@ class AudioRecorderSectionCubit extends Cubit<AAudioRecorderSectionState> {
       await _audioDecoder.startRecording(audioSettingsModel);
       _allFramesCount = null;
       emit(AudioRecorderSectionRecordingState());
-      audioSupervisorCubit?.refresh();
       progressNotifier.value = 0;
     } catch (e) {
       AppLogger().log(message: 'Cannot start recording: $e');
       emit(AudioRecorderSectionEmptyState());
-      audioSupervisorCubit?.refresh();
     }
   }
 
   Future<void> stopRecording() async {
     await _audioDecoder.cancelRecording();
     reset();
-    audioSupervisorCubit?.refresh();
   }
 
   void reset() {
@@ -73,7 +67,7 @@ class AudioRecorderSectionCubit extends Cubit<AAudioRecorderSectionState> {
     Uint8List recordedDataBytes = frameCollectionModel.rawDataBytes;
     if (brokenFrameIndexList.isEmpty) {
       emit(AudioRecorderSectionResultState(recordedData: recordedDataBytes));
-      audioSupervisorCubit?.refresh();
+      onRecorded.call();
     } else {
       emit(AudioRecorderSectionFailedState(
         correctDataFramesCount: _allFramesCount! - 1 - frameCollectionModel.getBrokenDataFrameIndexes().length,
@@ -87,6 +81,5 @@ class AudioRecorderSectionCubit extends Cubit<AAudioRecorderSectionState> {
       correctDataFramesCount: 0,
       allDataFramesCount: 0,
     ));
-    audioSupervisorCubit?.refresh();
   }
 }

@@ -51,7 +51,7 @@ class _AudioRecorderSectionState extends State<AudioRecorderSection> {
                     Expanded(
                       child: ElevatedButton(
                         onPressed:
-                            (recordingInProgressBool && widget.sectionBlockedBool == false) ? widget.audioRecorderSectionCubit.stopRecording : null,
+                        (recordingInProgressBool && widget.sectionBlockedBool == false) ? widget.audioRecorderSectionCubit.stopRecording : null,
                         child: const Text('Stop recording'),
                       ),
                     ),
@@ -71,10 +71,9 @@ class _AudioRecorderSectionState extends State<AudioRecorderSection> {
                     textAlign: TextAlign.center,
                   ),
                 if (state is AudioRecorderSectionResultState) ...<Widget>[
-                  const SizedBox(height: 20),
                   ElevatedButton.icon(
                     onPressed: () {
-                      widget.onSubmitted(Uint8List.fromList(state.recordedData));
+                      _submitRecordedData(Uint8List.fromList(state.recordedData));
                     },
                     label: const Text('Submit'),
                     icon: const Icon(Icons.navigate_next_outlined),
@@ -116,5 +115,10 @@ class _AudioRecorderSectionState extends State<AudioRecorderSection> {
         ],
       ),
     );
+  }
+
+  void _submitRecordedData(Uint8List recordedData) {
+    widget.onSubmitted(recordedData);
+    widget.audioRecorderSectionCubit.reset();
   }
 }
