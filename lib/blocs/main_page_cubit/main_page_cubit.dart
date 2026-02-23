@@ -32,7 +32,7 @@ class MainPageCubit extends Cubit<AMainPageState> {
   }
 
   Future<void> processRecordedMsg(Uint8List recordedMsgUint8List) async {
-    TrezorWsEvent activeEvent = (state as MainPageEnabledState).activeEvent;
+    TrezorWsEvent activeEvent = (state as MainPageEnabledState).activeWsEvent;
     ATrezorOutboundResponse? trezorOutboundResponse;
 
     try {
@@ -72,7 +72,7 @@ class MainPageCubit extends Cubit<AMainPageState> {
   Future<void> cancel() async {
     switch (state) {
       case MainPageEnabledState mainPageEnabledState:
-        mainPageEnabledState.activeEvent.reject('Operation canceled');
+        mainPageEnabledState.activeWsEvent.reject('Operation canceled');
       default:
         emit(MainPageDisabledState(pubkeyModel: state.pubkeyModel));
     }
@@ -94,7 +94,7 @@ class MainPageCubit extends Cubit<AMainPageState> {
 
   Future<void> _fetchResponseFromSnggle(TrezorWsEvent activeEvent, {bool repeatedAttemptBool = false}) async {
     emit(
-      MainPageEnabledState(activeEvent: activeEvent, pubkeyModel: state.pubkeyModel, repeatedAttemptBool: repeatedAttemptBool),
+      MainPageEnabledState(activeWsEvent: activeEvent, pubkeyModel: state.pubkeyModel, repeatedAttemptBool: repeatedAttemptBool),
     );
   }
 }
