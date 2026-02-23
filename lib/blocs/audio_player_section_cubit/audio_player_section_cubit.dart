@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mirage/blocs/audio_player_section_cubit/a_audio_player_section_state.dart';
+import 'package:mirage/blocs/audio_player_section_cubit/states/audio_player_section_emitted_state.dart';
 import 'package:mirage/blocs/audio_player_section_cubit/states/audio_player_section_emitting_state.dart';
 import 'package:mirage/blocs/audio_player_section_cubit/states/audio_player_section_empty_state.dart';
 import 'package:mrumru/mrumru.dart';
@@ -13,7 +14,7 @@ class AudioPlayerSectionCubit extends Cubit<AAudioPlayerSectionState> {
 
   AudioPlayerSectionCubit() : super(AudioPlayerSectionEmptyState()) {
     _audioGenerator = AudioGenerator(onGenerationCompleted: () {
-      emit(AudioPlayerSectionEmptyState());
+      emit(AudioPlayerSectionEmittedState());
     });
   }
 

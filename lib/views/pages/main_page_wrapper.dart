@@ -46,25 +46,16 @@ class _MainPageWrapperState extends State<MainPageWrapper> {
           body: SingleChildScrollView(
             child: Column(
               children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      if (mainPageState.pubkeyModel != null)
-                        Expanded(
-                          child: Text(
-                            'Active key: ${mainPageState.pubkeyModel!.hex}',
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(color: Colors.grey),
-                          ),
-                        ),
-                      if (mainPageState is MainPageEnabledState)
-                        IconButton(
-                          icon: const Icon(Icons.close),
-                          onPressed: _mainPageCubit.cancel,
-                        ),
-                    ],
+                if (mainPageState.pubkeyModel != null)
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      'Active key: ${mainPageState.pubkeyModel!.hex}',
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(color: Colors.grey),
+                    ),
                   ),
                 ),
                 Center(
@@ -76,9 +67,9 @@ class _MainPageWrapperState extends State<MainPageWrapper> {
                       ],
                       if (mainPageState is MainPageEnabledState) ...<Widget>[
                         DataTransferPage(
-                          mainPageState: mainPageState,
+                          mainPageEnabledState: mainPageState,
                           onSubmitted: _mainPageCubit.processRecordedMsg,
-                          isDeviceListEmpty: _isDeviceListEmpty,
+                          isDeviceListEmpty: _isDeviceListEmpty, onCancel: () {  },
                         ),
                       ],
                     ],

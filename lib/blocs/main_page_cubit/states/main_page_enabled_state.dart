@@ -8,11 +8,11 @@ import 'package:mirage/infra/trezor/ws/trezor_ws_event.dart';
 import 'package:mirage/shared/models/pubkey_model.dart';
 
 class MainPageEnabledState extends AMainPageState {
-  final TrezorWsEvent activeEvent;
+  final TrezorWsEvent activeWsEvent;
   final bool repeatedAttemptBool;
 
   const MainPageEnabledState({
-    required this.activeEvent,
+    required this.activeWsEvent,
     this.repeatedAttemptBool = false,
     super.pubkeyModel,
   });
@@ -20,17 +20,17 @@ class MainPageEnabledState extends AMainPageState {
   @override
   AMainPageState copyWith({PubkeyModel? pubkeyModel}) {
     return MainPageEnabledState(
-      activeEvent: activeEvent,
+      activeWsEvent: activeWsEvent,
       pubkeyModel: pubkeyModel,
     );
   }
 
-  String get title => activeEvent.trezorInboundRequest.title;
+  String get title => activeWsEvent.trezorInboundRequest.title;
 
-  List<String> get description => activeEvent.trezorInboundRequest.description;
+  List<String> get description => activeWsEvent.trezorInboundRequest.description;
 
   Uint8List get audioRequestData {
-    switch (activeEvent.trezorInboundRequest) {
+    switch (activeWsEvent.trezorInboundRequest) {
       case TrezorPublicKeyRequest trezorPublicKeyRequest:
         return trezorPublicKeyRequest.toSerializedCbor();
       case TrezorEIP1559SignatureRequest trezorEIP1559SignatureRequest:
@@ -38,10 +38,10 @@ class MainPageEnabledState extends AMainPageState {
       case TrezorEthMsgSignatureRequest trezorEthMsgSignatureRequest:
         return trezorEthMsgSignatureRequest.toSerializedCbor(pubkeyModel: pubkeyModel);
       default:
-        return activeEvent.trezorInboundRequest.toSerializedCbor();
+        return activeWsEvent.trezorInboundRequest.toSerializedCbor();
     }
   }
 
   @override
-  List<Object?> get props => <Object?>[activeEvent, pubkeyModel];
+  List<Object?> get props => <Object?>[activeWsEvent, pubkeyModel];
 }

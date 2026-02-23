@@ -1,10 +1,10 @@
 import 'package:mirage/blocs/audio_recorder_section_cubit/a_audio_recorder_section_state.dart';
 
-class AudioRecorderSectionFailedState extends AAudioRecorderSectionState {
+class AudioRecorderSectionMissingDataState extends AAudioRecorderSectionState {
   final int correctDataFramesCount;
   final int allDataFramesCount;
 
-  AudioRecorderSectionFailedState({
+  AudioRecorderSectionMissingDataState({
     required this.correctDataFramesCount,
     required this.allDataFramesCount,
   });
