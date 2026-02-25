@@ -45,7 +45,6 @@ class _AudioRecorderSectionState extends State<AudioRecorderSection> {
   @override
   void dispose() {
     _devicePollTimer?.cancel();
-    widget.audioRecorderSectionCubit.stopRecording(retryingBool: false);
     super.dispose();
   }
 
@@ -127,7 +126,7 @@ class _AudioRecorderSectionState extends State<AudioRecorderSection> {
             if (state is AudioRecorderSectionRetryingState && _micActiveBool) ...<Widget>[
               const CircularProgressIndicator(),
               const SizedBox(height: 16),
-              const Text('Connection failed, try again'),
+              const Text('Connection failed, trying again'),
             ],
 
             if (state is AudioRecorderSectionRecordingState && _micActiveBool) ...<Widget>[

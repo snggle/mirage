@@ -47,17 +47,17 @@ class _MainPageWrapperState extends State<MainPageWrapper> {
             child: Column(
               children: <Widget>[
                 if (mainPageState.pubkeyModel != null)
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      'Active key: ${mainPageState.pubkeyModel!.hex}',
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(color: Colors.grey),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        'Active key: ${mainPageState.pubkeyModel!.hex}',
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(color: Colors.grey),
+                      ),
                     ),
                   ),
-                ),
                 Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -69,7 +69,8 @@ class _MainPageWrapperState extends State<MainPageWrapper> {
                         DataTransferPage(
                           mainPageEnabledState: mainPageState,
                           onSubmitted: _mainPageCubit.processRecordedMsg,
-                          isDeviceListEmpty: _isDeviceListEmpty, onCancel: () {  },
+                          isDeviceListEmpty: _isDeviceListEmpty,
+                          onCancel: _mainPageCubit.cancel,
                         ),
                       ],
                     ],

@@ -30,6 +30,12 @@ class AudioRecorderSectionCubit extends Cubit<AAudioRecorderSectionState> {
     );
   }
 
+  @override
+  Future<void> close() async {
+    await stopRecording(retryingBool: false);
+    await super.close();
+  }
+
   Future<void> startRecording() async {
     try {
       await _audioDecoder.startRecording(_audioSettingsModel);

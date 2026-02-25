@@ -11,14 +11,20 @@ import 'package:mrumru/mrumru.dart';
 class AudioPlayerSectionCubit extends Cubit<AAudioPlayerSectionState> {
   late final AudioGenerator _audioGenerator;
   late AudioSettingsModel audioSettingsModel = AudioSettingsModel(frequencyGenerator: StandardFrequencyGenerator(subbandCount: 32));
+  bool _cancelledByUserBool = false;
 
   AudioPlayerSectionCubit() : super(AudioPlayerSectionEmptyState()) {
-    _audioGenerator = AudioGenerator(onGenerationCompleted: () {
-      emit(AudioPlayerSectionEmittedState());
-    });
+    _audioGenerator = AudioGenerator(onGenerationCompleted: _handleGenerationCompleted);
+  }
+
+  @override
+  Future<void> close() async {
+    stopSound();
+    await super.close();
   }
 
   Future<void> playSound(Uint8List msgUint8List) async {
+    _cancelledByUserBool = false;
     await _audioGenerator.startGenerating(AudioGeneratorParams(
       audioSettingsModel: audioSettingsModel,
       bytes: msgUint8List,
@@ -29,5 +35,18 @@ class AudioPlayerSectionCubit extends Cubit<AAudioPlayerSectionState> {
 
   void stopSound() {
     _audioGenerator.cancelGenerating();
+    _cancelledByUserBool = true;
+  }
+
+  void _handleGenerationCompleted() {
+    if (isClosed) {
+      return;
+    }
+
+    if (_cancelledByUserBool) {
+      emit(AudioPlayerSectionEmptyState());
+    } else {
+      emit(AudioPlayerSectionEmittedState());
+    }
   }
 }

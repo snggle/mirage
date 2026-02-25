@@ -42,8 +42,8 @@ class _DataTransferPageState extends State<DataTransferPage> {
 
   @override
   void dispose() {
-    _audioRecorderSectionCubit.close();
     _audioPlayerSectionCubit.close();
+    _audioRecorderSectionCubit.close();
     super.dispose();
   }
 
