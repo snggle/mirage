@@ -126,7 +126,7 @@ class _AudioRecorderSectionState extends State<AudioRecorderSection> {
             if (state is AudioRecorderSectionRetryingState && _micActiveBool) ...<Widget>[
               const CircularProgressIndicator(),
               const SizedBox(height: 16),
-              const Text('Connection failed, trying again'),
+              const Text('Recording failed, trying again'),
             ],
 
             if (state is AudioRecorderSectionRecordingState && _micActiveBool) ...<Widget>[
