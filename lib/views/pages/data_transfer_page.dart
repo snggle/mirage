@@ -59,11 +59,7 @@ class _DataTransferPageState extends State<DataTransferPage> {
       AudioPlayerSection(
         msgUint8List: widget.mainPageEnabledState.audioRequestData,
         audioPlayerSectionCubit: _audioPlayerSectionCubit,
-        onProceed: () {
-          setState(() {
-            index = 1;
-          });
-        },
+        onProceed: _onProceed,
       ),
       AudioRecorderSection(
         onRecorded: widget.onSubmitted,
@@ -114,5 +110,11 @@ class _DataTransferPageState extends State<DataTransferPage> {
         ),
       ),
     );
+  }
+
+  void _onProceed() {
+    setState(() {
+      index = 1;
+    });
   }
 }
