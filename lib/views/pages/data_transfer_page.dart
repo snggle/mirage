@@ -3,9 +3,8 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:mirage/blocs/audio_player_section_cubit/audio_player_section_cubit.dart';
 import 'package:mirage/blocs/audio_recorder_section_cubit/audio_recorder_section_cubit.dart';
-
 import 'package:mirage/blocs/main_page_cubit/states/main_page_enabled_state.dart';
-import 'package:mirage/infra/trezor/protobuf/trezor_inbound_requests/interactive/trezor_public_key_request.dart';
+import 'package:mirage/infra/trezor/api_methods/trezor_inbound_requests/trezor_public_key_request.dart';
 import 'package:mirage/views/widgets/audio_player_section.dart';
 import 'package:mirage/views/widgets/audio_recorder_section.dart';
 import 'package:mirage/views/widgets/bullet_list_widget.dart';
