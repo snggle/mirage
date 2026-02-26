@@ -48,53 +48,6 @@ class _AudioRecorderSectionState extends State<AudioRecorderSection> {
     super.dispose();
   }
 
-  void _startDevicePolling() {
-    _devicePollTimer?.cancel();
-    _devicePollTimer = Timer.periodic(const Duration(milliseconds: 2000), (_) async {
-      final bool isEmpty = await widget.isDeviceListEmpty();
-
-      if (isEmpty != _lastDeviceEmpty) {
-        _lastDeviceEmpty = isEmpty;
-
-        if (!mounted) {
-          return;
-        }
-
-        if (isEmpty) {
-          setState(() => _micActiveBool = false);
-          await widget.audioRecorderSectionCubit.stopRecording(retryingBool: false);
-        } else {
-          setState(() => _micActiveBool = true);
-          await widget.audioRecorderSectionCubit.startRecording();
-        }
-      }
-    });
-  }
-
-  Future<void> _tryStartRecording() async {
-    final bool deviceListEmptyBool = await widget.isDeviceListEmpty();
-    if (!mounted) {
-      return;
-    }
-
-    setState(() {
-      _recordedBytes = null;
-      _micActiveBool = !deviceListEmptyBool;
-    });
-
-    if (!deviceListEmptyBool) {
-      await widget.audioRecorderSectionCubit.startRecording();
-    }
-  }
-
-  void _finish() {
-    final Uint8List? bytes = _recordedBytes;
-    if (bytes == null) {
-      return;
-    }
-    widget.onRecorded(bytes);
-  }
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AudioRecorderSectionCubit, AAudioRecorderSectionState>(
@@ -174,5 +127,52 @@ class _AudioRecorderSectionState extends State<AudioRecorderSection> {
         );
       },
     );
+  }
+
+  void _startDevicePolling() {
+    _devicePollTimer?.cancel();
+    _devicePollTimer = Timer.periodic(const Duration(milliseconds: 2000), (_) async {
+      final bool isEmpty = await widget.isDeviceListEmpty();
+
+      if (isEmpty != _lastDeviceEmpty) {
+        _lastDeviceEmpty = isEmpty;
+
+        if (!mounted) {
+          return;
+        }
+
+        if (isEmpty) {
+          setState(() => _micActiveBool = false);
+          await widget.audioRecorderSectionCubit.stopRecording(retryingBool: false);
+        } else {
+          setState(() => _micActiveBool = true);
+          await widget.audioRecorderSectionCubit.startRecording();
+        }
+      }
+    });
+  }
+
+  Future<void> _tryStartRecording() async {
+    final bool deviceListEmptyBool = await widget.isDeviceListEmpty();
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {
+      _recordedBytes = null;
+      _micActiveBool = !deviceListEmptyBool;
+    });
+
+    if (!deviceListEmptyBool) {
+      await widget.audioRecorderSectionCubit.startRecording();
+    }
+  }
+
+  void _finish() {
+    final Uint8List? bytes = _recordedBytes;
+    if (bytes == null) {
+      return;
+    }
+    widget.onRecorded(bytes);
   }
 }
