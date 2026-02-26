@@ -12,6 +12,7 @@ import 'package:mirage/infra/trezor/api_methods/trezor_inbound_requests/trezor_e
 import 'package:mirage/infra/trezor/api_methods/trezor_inbound_requests/trezor_eth_msg_signature_request.dart';
 import 'package:mirage/infra/trezor/api_methods/trezor_inbound_requests/trezor_public_key_request.dart';
 import 'package:mirage/infra/trezor/api_methods/trezor_outbound_responses/a_trezor_outbound_response.dart';
+import 'package:mirage/infra/trezor/api_methods/trezor_outbound_responses/trezor_error_response.dart';
 import 'package:mirage/infra/trezor/api_methods/trezor_outbound_responses/trezor_public_key_response.dart';
 import 'package:mirage/infra/trezor/api_methods/trezor_ws_communication_notifier.dart';
 import 'package:mirage/infra/trezor/ws/trezor_ws_event.dart';
@@ -47,10 +48,11 @@ class MainPageCubit extends Cubit<AMainPageState> {
         case TrezorEIP1559SignatureRequest trezorEIP1559SignatureRequest:
           trezorOutboundResponse = await trezorEIP1559SignatureRequest.getResponseFromCborPayload(recordedMsgUint8List);
         case TrezorEthMsgSignatureRequest trezorEthMsgSignatureRequest:
-          trezorOutboundResponse = await trezorEthMsgSignatureRequest.getResponseFromCborPayload(recordedMsgUint8List, pubkeyModel: state.pubkeyModel);
+          trezorOutboundResponse =
+              await trezorEthMsgSignatureRequest.getResponseFromCborPayload(recordedMsgUint8List, pubkeyModel: state.pubkeyModel);
       }
     } catch (e) {
-      trezorOutboundResponse = null;
+      trezorOutboundResponse = TrezorErrorResponse(code: 'TREZOR_EXCEPTION', message: e.toString());
     }
 
     emit(MainPageRecordedState(
