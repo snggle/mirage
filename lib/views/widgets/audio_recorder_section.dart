@@ -55,7 +55,7 @@ class _AudioRecorderSectionState extends State<AudioRecorderSection> {
       builder: (BuildContext context, AAudioRecorderSectionState state) {
         if (state is AudioRecorderSectionResultState && _recordedBytes == null) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (!mounted) {
+            if (mounted == false) {
               return;
             }
             setState(() => _recordedBytes = state.recordedDataBytes);
@@ -137,7 +137,7 @@ class _AudioRecorderSectionState extends State<AudioRecorderSection> {
       if (isEmpty != _lastDeviceEmpty) {
         _lastDeviceEmpty = isEmpty;
 
-        if (!mounted) {
+        if (mounted == false) {
           return;
         }
 
@@ -154,16 +154,16 @@ class _AudioRecorderSectionState extends State<AudioRecorderSection> {
 
   Future<void> _tryStartRecording() async {
     final bool deviceListEmptyBool = await widget.isDeviceListEmpty();
-    if (!mounted) {
+    if (mounted == false) {
       return;
     }
 
     setState(() {
       _recordedBytes = null;
-      _micActiveBool = !deviceListEmptyBool;
+      _micActiveBool = deviceListEmptyBool == false;
     });
 
-    if (!deviceListEmptyBool) {
+    if (deviceListEmptyBool == false) {
       await widget.audioRecorderSectionCubit.startRecording();
     }
   }
