@@ -30,7 +30,6 @@ class _IdlePageState extends State<IdlePage> {
           if (widget.pubkeyExistsBool) ...<Widget>[
             const SizedBox(height: 30),
             const Text('Mirage is waiting for your actions on MetaMask', style: TextStyle(fontSize: 16)),
-          ],
             const SizedBox(height: 20),
             const Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -58,7 +57,8 @@ class _IdlePageState extends State<IdlePage> {
                 ),
               ],
             ),
-            const SizedBox(height: 20),
+          ],
+          const SizedBox(height: 20),
           if (widget.pubkeyExistsBool == false) ...<Widget>[
             ElevatedButton(onPressed: widget.onOpenPubkeyUpload, child: const Text('Connect wallet')),
             const SizedBox(height: 50),
